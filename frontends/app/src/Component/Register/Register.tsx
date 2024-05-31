@@ -1,25 +1,19 @@
 import { ChangeEvent, FC, useState } from "react";
-import { Box, Button, Checkbox, FormControlLabel, Grid, Link, TextField, Typography, styled } from "@mui/material";
+import { Box, Button, Grid, Link, TextField, Typography, styled } from "@mui/material";
 import { cyan } from '@mui/material/colors';
-import { LoginComponentInterface, LoginInputInterface } from "./interface";
-import LogoIllustration from './assets/login_illustration.jpg'
+import { RegisterComponentInterface, RegisterInputInterface } from "./interface";
+import LogoIllustration from './assets/register_illustration.jpg'
 
-const checkBoxInput = {
-    color: cyan[50],
-    '&.Mui-checked': {
-        color: cyan[50],
-    },
-};
-
-const DEFAULT_INPUT: LoginInputInterface = {
+const DEFAULT_INPUT: RegisterInputInterface = {
     email: '',
     password: '',
-    rememberMe: false
+    confirmPassword: '',
+    userName: ''
 }
 
-export const Login: FC<LoginComponentInterface> = (props) => {
+export const Register: FC<RegisterComponentInterface> = (props) => {
 
-    const [input, setInput] = useState<LoginInputInterface>(DEFAULT_INPUT);
+    const [input, setInput] = useState<RegisterInputInterface>(DEFAULT_INPUT);
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.type === 'checkbox') {
@@ -39,30 +33,44 @@ export const Login: FC<LoginComponentInterface> = (props) => {
         });
     };
 
-    return <StyledWrapper container className="login-container">
-        <Grid className="login-grid-illustration" item lg={6}>
-            <Box className="login-illustration" component="img" alt="Login illustration page desgined by vectorjuice" src={LogoIllustration} />
+    return <StyledWrapper container className="register-container">
+        <Grid className="register-grid-illustration" item lg={6}>
+            <Box className="register-illustration" component="img" alt="Register illustration page desgined by vectorjuice" src={LogoIllustration} />
         </Grid>
         <Grid 
             item 
             lg={6} 
             container
-            className="login-form-content"
+            className="register-form-content"
             display="flex"
             flexDirection="column"
             justifyContent="center"
             alignItems="center"
         >
-            <Box className="login-form-title" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+            <Box className="register-form-title" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
                 <Typography variant="h1" component="h1">InStock</Typography>
-                <Typography variant="body1" component="p" className="login-subtitle">Bienvenue sur InStockApp : votre plateforme pour suivre les marchés, gérer votre portefeuille et investir en toute confiance.</Typography>
+                <Typography variant="body1" component="p" className="register-subtitle">Rejoignez StockApp dès maintenant et commencez à investir pour un avenir financier sécurisé.</Typography>
             </Box>
             <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
-                <form className="login-form__form-body">
+                <form className="register-form__form-body">
                     <Box py={1}>
                         <TextField
                             required
-                            id="email-login"
+                            id="userName-register"
+                            label="Nom"
+                            type="text"
+                            variant="filled"
+                            name="userName"
+                            autoComplete="off"
+                            value={input.userName}
+                            onChange={handleChange}
+                            className="input-register-text"
+                        />
+                    </Box>
+                    <Box py={1}>
+                        <TextField
+                            required
+                            id="email-register"
                             label="Email"
                             type="email"
                             variant="filled"
@@ -70,13 +78,13 @@ export const Login: FC<LoginComponentInterface> = (props) => {
                             autoComplete="off"
                             value={input.email}
                             onChange={handleChange}
-                            className="input-login-text"
+                            className="input-register-text"
                         />
                     </Box>
                     <Box py={1}>
                         <TextField
                             required
-                            id="password-login"
+                            id="password-register"
                             label="Mot de passe"
                             type="password"
                             variant="filled"
@@ -84,19 +92,26 @@ export const Login: FC<LoginComponentInterface> = (props) => {
                             autoComplete="off"
                             value={input.password}
                             onChange={handleChange}
-                            className="input-login-text"
+                            className="input-register-text"
                         />
                     </Box>
-                    <Box py={1} display="flex" flexDirection="row" justifyContent="space-between" alignItems="center" flexWrap="wrap">
-                        <FormControlLabel
-                            control={<Checkbox sx={checkBoxInput} onChange={handleChange} checked={input.rememberMe} name="rememberMe" />}
-                            label="Se souvenir de moi"
-                        />
-                        <Link className="login-to-forgot-password" href="http://www.freepik.com">Mot de passe oublié?</Link>
-                    </Box>
-                    <Button variant="contained">Se connecter</Button>
                     <Box py={1}>
-                        <Typography component="p" variant="body2">Vous n'avez pas encore une compte? <Link className="login-to-register" href="/register">Inscrivez vous ici.</Link></Typography>
+                        <TextField
+                            required
+                            id="confirm-password-register"
+                            label="Confirmation du mot de passe"
+                            type="password"
+                            variant="filled"
+                            name="confirmPassword"
+                            autoComplete="off"
+                            value={input.confirmPassword}
+                            onChange={handleChange}
+                            className="input-register-text"
+                        />
+                    </Box>
+                    <Button variant="contained">S'inscrire</Button>
+                    <Box py={1}>
+                        <Typography component="p" variant="body2">Vous avez déjà une compte? <Link className="register-to-login" href="/login">Connectez vous ici.</Link></Typography>
                     </Box>
                 </form>
             </Box>
@@ -112,40 +127,40 @@ const StyledWrapper = styled(Grid)`
     height: 100vh;
     overflow: hidden;
     color: ${cyan[50]};
-    .login-grid-illustration {
+    .register-grid-illustration {
         display: none;
         ${props => props.theme.breakpoints.up('lg')} {
             display: block;
         }
-        .login-illustration {
+        .register-illustration {
             width: 100%;
             height: 100vh;
         }
     }
-    .login-form-content {
-        .login-form-title {
+    .register-form-content {
+        .register-form-title {
             max-width: 380px;
             ${props => props.theme.breakpoints.up('lg')} {
                 max-width: 500px;
             }
-            .login-subtitle {
+            .register-subtitle {
                 text-align: center;
             }
         }
-        .login-form__form-body {
+        .register-form__form-body {
             width: 350px;
             ${props => props.theme.breakpoints.up('lg')} {
                 width: 450px;
             }
             display: flex;
             flex-direction: column;
-            .input-login-text {
+            .input-register-text {
                 width: 100%;
             }
             .MuiInputLabel-filled {
                 color: ${cyan[50]}
             }
-            .login-to-register, .login-to-forgot-password {
+            .register-to-login {
                 color: ${cyan[50]};
                 text-decoration: underline;
             }

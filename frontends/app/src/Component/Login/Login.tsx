@@ -1,8 +1,9 @@
-import { ChangeEvent, FC, useState } from "react";
-import { Box, Button, Checkbox, FormControlLabel, Grid, Link, TextField, Typography, styled } from "@mui/material";
+import { ChangeEvent, FC, FormEvent, useEffect, useState } from "react";
+import { Alert, Box, Button, Checkbox, FormControlLabel, Grid, Link, TextField, Typography, styled } from "@mui/material";
 import { cyan } from '@mui/material/colors';
 import { LoginComponentInterface, LoginInputInterface } from "./interface";
 import LogoIllustration from './assets/login_illustration.jpg'
+import { LoginValidation } from "../../Helper";
 
 const checkBoxInput = {
     color: cyan[50],
@@ -20,6 +21,20 @@ const DEFAULT_INPUT: LoginInputInterface = {
 export const Login: FC<LoginComponentInterface> = (props) => {
 
     const [input, setInput] = useState<LoginInputInterface>(DEFAULT_INPUT);
+    const [error, setError] = useState<string>();
+
+    const lsRememberMe = localStorage.getItem('rememberMe');
+
+    useEffect(() => {
+        if(lsRememberMe && lsRememberMe !== 'null') {
+            setInput((prev) => {
+                return  {
+                    ...prev,
+                    email: lsRememberMe
+                }
+            });
+        }
+    }, [lsRememberMe]);
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.type === 'checkbox') {
@@ -39,6 +54,22 @@ export const Login: FC<LoginComponentInterface> = (props) => {
         });
     };
 
+    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const loginValidation = new LoginValidation(input);
+
+        const checkLoginValidity = loginValidation.checkLoginValidity();
+
+        if (checkLoginValidity?.isValid) {
+            localStorage.setItem('rememberMe', input.rememberMe ? input.email : 'null');
+            console.log('[INPUT', input);
+            return;
+        }
+
+        setError(checkLoginValidity?.message);
+
+    }
+
     return <StyledWrapper container className="login-container">
         <Grid className="login-grid-illustration" item lg={6}>
             <Box className="login-illustration" component="img" alt="Login illustration page desgined by vectorjuice" src={LogoIllustration} />
@@ -54,11 +85,12 @@ export const Login: FC<LoginComponentInterface> = (props) => {
             alignItems="center"
         >
             <Box className="login-form-title" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+                {error && <Alert severity="error">{error}</Alert>}
                 <Typography variant="h1" component="h1">InStock</Typography>
                 <Typography variant="body1" component="p" className="login-subtitle">Bienvenue sur InStockApp : votre plateforme pour suivre les marchés, gérer votre portefeuille et investir en toute confiance.</Typography>
             </Box>
             <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
-                <form className="login-form__form-body">
+                <form className="login-form__form-body" onSubmit={handleSubmit}>
                     <Box py={1}>
                         <TextField
                             required
@@ -94,7 +126,7 @@ export const Login: FC<LoginComponentInterface> = (props) => {
                         />
                         <Link className="login-to-forgot-password" href="http://www.freepik.com">Mot de passe oublié?</Link>
                     </Box>
-                    <Button variant="contained">Se connecter</Button>
+                    <Button type="submit" variant="contained">Se connecter</Button>
                     <Box py={1}>
                         <Typography component="p" variant="body2">Vous n'avez pas encore une compte? <Link className="login-to-register" href="/register">Inscrivez vous ici.</Link></Typography>
                     </Box>

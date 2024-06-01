@@ -1,8 +1,9 @@
-import { ChangeEvent, FC, useState } from "react";
-import { Box, Button, Grid, Link, TextField, Typography, styled } from "@mui/material";
+import { ChangeEvent, FC, FormEvent, useState } from "react";
+import { Alert, Box, Button, Grid, Link, TextField, Typography, styled } from "@mui/material";
 import { cyan } from '@mui/material/colors';
 import { RegisterComponentInterface, RegisterInputInterface } from "./interface";
 import LogoIllustration from './assets/register_illustration.jpg'
+import { RegisterValidation } from "../../Helper";
 
 const DEFAULT_INPUT: RegisterInputInterface = {
     email: '',
@@ -14,6 +15,7 @@ const DEFAULT_INPUT: RegisterInputInterface = {
 export const Register: FC<RegisterComponentInterface> = (props) => {
 
     const [input, setInput] = useState<RegisterInputInterface>(DEFAULT_INPUT);
+    const [error, setError] = useState<string>();
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.type === 'checkbox') {
@@ -33,6 +35,22 @@ export const Register: FC<RegisterComponentInterface> = (props) => {
         });
     };
 
+    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        const registerValidation = new RegisterValidation(input);
+
+        const checkRegisterValidity = registerValidation.checkRegisterValidity();
+
+        if (checkRegisterValidity?.isValid) {
+            console.log('[INPUT', input);
+            return;
+        }
+
+        setError(checkRegisterValidity?.message);
+
+    };
+
     return <StyledWrapper container className="register-container">
         <Grid className="register-grid-illustration" item lg={6}>
             <Box className="register-illustration" component="img" alt="Register illustration page desgined by vectorjuice" src={LogoIllustration} />
@@ -48,11 +66,12 @@ export const Register: FC<RegisterComponentInterface> = (props) => {
             alignItems="center"
         >
             <Box className="register-form-title" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+                {error && <Alert severity="error">{error}</Alert>}
                 <Typography variant="h1" component="h1">InStock</Typography>
                 <Typography variant="body1" component="p" className="register-subtitle">Rejoignez StockApp dès maintenant et commencez à investir pour un avenir financier sécurisé.</Typography>
             </Box>
             <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
-                <form className="register-form__form-body">
+                <form className="register-form__form-body" onSubmit={handleSubmit}>
                     <Box py={1}>
                         <TextField
                             required
@@ -109,7 +128,7 @@ export const Register: FC<RegisterComponentInterface> = (props) => {
                             className="input-register-text"
                         />
                     </Box>
-                    <Button variant="contained">S'inscrire</Button>
+                    <Button type="submit" variant="contained">S'inscrire</Button>
                     <Box py={1}>
                         <Typography component="p" variant="body2">Vous avez déjà une compte? <Link className="register-to-login" href="/login">Connectez vous ici.</Link></Typography>
                     </Box>

@@ -1,17 +1,37 @@
-import { ChangeEvent, FC, FormEvent, useEffect, useState } from "react";
+import { ChangeEvent, FC, FormEvent, MouseEvent, useEffect, useState } from "react";
 import { Alert, Box, Button, Grid, Link, TextField, Typography, styled } from "@mui/material";
 import AES from 'crypto-js/aes';
 import { cyan } from "@mui/material/colors";
 import { CodeValidationInterface } from "./interface";
-import { ForgotPasswordValidation } from "../../../Helper";
+import { Email, ForgotPasswordValidation } from "../../../Helper";
 import Config from './../../../Config/config.json'
 
 export const CodeValidation: FC<CodeValidationInterface> = (props) => {
+    
     const [emailHashed, setEmailHashed] = useState<string>();
+    const [info, setInfo] = useState<string>();
+
     useEffect(() => {
         const hashedEmail = AES.encrypt(props.input.email, Config.SECRET_KEY_HMAC).toString();
         setEmailHashed(hashedEmail);
-    }, []);
+    }, [props.input.email]);
+
+    const handleResendCode = async (e: MouseEvent<HTMLElement>) => {
+        e.stopPropagation();
+        const emailService = new Email({
+            emailReceiver: props.input.email
+        });
+
+        await emailService.send().then((result) => {
+            if (result.success) {
+                props.setError(undefined);
+                setInfo(result.message);
+            } else {
+                setInfo(undefined);
+                props.setError(result.message);
+            }
+        });
+    };
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.type === 'checkbox') {
@@ -57,6 +77,7 @@ export const CodeValidation: FC<CodeValidationInterface> = (props) => {
             >
                 <Typography variant="body1" component="p" className="code-validation-subtitle">Une code a été envoyé sur votre email. Copiez-le sur le champs ci-dessous.</Typography>
                 {props.error && <Alert severity="error">{props.error}</Alert>}
+                {info && <Alert severity="info">{info}</Alert>}
                 <form className="code-validation-form__form-body" onSubmit={handleSubmit}>
                     <Box py={1}>
                         <TextField
@@ -74,7 +95,7 @@ export const CodeValidation: FC<CodeValidationInterface> = (props) => {
                     </Box>
                     {emailHashed && (
                         <Box py={1}>
-                            <Link className="code-validation-to-resend-code" href={`/resend-code?e=${emailHashed}`}>Code renvoyé?</Link>
+                            <Link onClick={handleResendCode} component="p" className="code-validation-to-resend-code">Code renvoyé?</Link>
                         </Box>
                     )}
                     <Box py={1}>
@@ -108,6 +129,7 @@ const StyledWrapper = styled(Grid)`
         .code-validation-to-resend-code {
             color: ${cyan[50]};
             text-decoration: underline;
+            cursor: pointer;
         }
     }
     

@@ -1,10 +1,10 @@
 import { ChangeEvent, FC, FormEvent } from "react";
-import { Alert, Box, Button, Grid, TextField, Typography, styled } from "@mui/material";
+import { Alert, Box, Button, Grid, Link, TextField, Typography, styled } from "@mui/material";
 import { cyan } from "@mui/material/colors";
-import { EmailValidationInterface } from "./interface";
+import { CodeValidationInterface } from "./interface";
 import { ForgotPasswordValidation } from "../../../Helper";
 
-export const EmailValidation: FC<EmailValidationInterface> = (props) => {
+export const CodeValidation: FC<CodeValidationInterface> = (props) => {
     
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.type === 'checkbox') {
@@ -28,48 +28,50 @@ export const EmailValidation: FC<EmailValidationInterface> = (props) => {
         e.preventDefault();
         const emailValidation = new ForgotPasswordValidation(props.input);
 
-        const checkEmailValidity = emailValidation.checkEmailValidity();
+        const checkCodeValidation = emailValidation.checkCodeValidation();
 
-        if (checkEmailValidity.isValid) {
-            props.setError(undefined);
-            props.onChangeStep(1);
+        if (checkCodeValidation.isValid) {
+            props.onChangeStep(2);
             return;
         }
 
-        props.setError(checkEmailValidity.message);
+        props.setError(checkCodeValidation.message);
 
     };
 
     return  <StyledWrapper 
                 container 
-                className="email-validation-form-content"
+                className="code-validation-form-content"
                 display="flex"
                 flexDirection="column"
                 justifyContent="center"
                 alignItems="center"
             >
-                <Typography variant="body1" component="p" className="email-validation-subtitle">Entrez votre adresse e-mail.</Typography>
+                <Typography variant="body1" component="p" className="code-validation-subtitle">Une code a été envoyé sur votre email. Copiez-le sur le champs ci-dessous.</Typography>
                 {props.error && <Alert severity="error">{props.error}</Alert>}
-                <form className="email-validation-form__form-body" onSubmit={handleSubmit}>
+                <form className="code-validation-form__form-body" onSubmit={handleSubmit}>
                     <Box py={1}>
                         <TextField
                             required
-                            id="email-validation-forgot-password"
-                            label="Email"
-                            type="email"
+                            id="code-validation-forgot-password"
+                            label="Code"
+                            type="text"
                             variant="filled"
-                            name="email"
+                            name="code"
                             autoComplete="off"
-                            value={props.input.email}
+                            value={props.input.code}
                             onChange={handleChange}
-                            className="input-email-validation-text"
+                            className="input-code-validation-text"
                         />
                     </Box>
-                    <Box py={1}>
-                        <Button className="email-validation-submit" type="submit" variant="contained">Vérifier</Button>
+                    <Box>
+                        <Link className="code-validation-to-resend-code" href="/resend-code">Code renvoyé?</Link>
                     </Box>
                     <Box py={1}>
-                        <Button component="a" href="/login" className="email-validation-submit" color="secondary" variant="contained">Annuler</Button>
+                        <Button className="code-validation-submit" type="submit" variant="contained">Vérifier</Button>
+                    </Box>
+                    <Box py={1}>
+                        <Button component="a" href="/login" className="code-validation-submit" color="secondary" variant="contained">Annuler</Button>
                     </Box>
                 </form>
             </StyledWrapper>
@@ -78,20 +80,24 @@ export const EmailValidation: FC<EmailValidationInterface> = (props) => {
 const StyledWrapper = styled(Grid)`
     color: ${cyan[50]};
     
-    .email-validation-subtitle {
+    .code-validation-subtitle {
         text-align: center;
     }
-    .email-validation-form__form-body {
+    .code-validation-form__form-body {
         display: flex;
         flex-direction: column;
-        .input-email-validation-text {
+        .input-code-validation-text {
             width: 100%;
         }
-        .email-validation-submit {
+        .code-validation-submit {
             width: 100%;
         }
         .MuiInputLabel-filled {
             color: ${cyan[50]};
+        }
+        .code-validation-to-resend-code {
+            color: ${cyan[50]};
+            text-decoration: underline;
         }
     }
     

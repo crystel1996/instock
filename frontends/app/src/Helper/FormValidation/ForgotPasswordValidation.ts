@@ -24,4 +24,20 @@ export class ForgotPasswordValidation {
             message: 'Veuillez saisir une adresse email.'
         };
     }
+
+    checkCodeValidation() {
+        if(this.input?.code) {
+            return {
+                isValid: true,
+                message: ''
+            }
+        }
+
+        return {
+            isValid: false,
+            message: 'Veuillez saisir le code de validation.'
+        }
+
+    }
+
 }

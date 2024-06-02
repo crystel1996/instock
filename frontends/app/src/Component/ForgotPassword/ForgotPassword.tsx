@@ -1,12 +1,14 @@
-import { FC, useState } from "react";
-import { Alert, Box, Grid, Link, Typography, styled } from "@mui/material";
+import { FC, useMemo, useState } from "react";
+import { Box, Grid, Link, Typography, styled } from "@mui/material";
 import { cyan } from "@mui/material/colors";
 import { ForgotPasswordInputInterface, ForgotPasswordInterface } from "./interface";
 import ForgotPasswordIllustration from './assets/forgot-password_illustration.jpg'
 import { EmailValidation } from "./EmailValidation";
+import { CodeValidation } from "./CodeValidation";
 
 const DEFAULT_INPUT: ForgotPasswordInputInterface = {
-    email: ''
+    email: '',
+    code: ''
 }
 
 export const ForgotPassword: FC<ForgotPasswordInterface> = () => {
@@ -17,6 +19,34 @@ export const ForgotPassword: FC<ForgotPasswordInterface> = () => {
     const handleChangeStep = (step: number) => {
         setStep(step);
     };
+
+    const FORM_VALIDATION_STEP = useMemo(() => {
+        if (step === 0) {
+            return  <EmailValidation
+                        input={input}
+                        setInput={setInput}
+                        error={error}
+                        setError={setError}
+                        onChangeStep={handleChangeStep}
+                    />
+        }
+        if (step === 1) {
+            return  <CodeValidation 
+                        input={input}
+                        setInput={setInput}
+                        error={error}
+                        setError={setError}
+                        onChangeStep={handleChangeStep}
+                    />
+        }
+        return  <EmailValidation
+                    input={input}
+                    setInput={setInput}
+                    error={error}
+                    setError={setError}
+                    onChangeStep={handleChangeStep}
+                />
+    }, [step, error, input]);
 
     return <StyledWrapper container className="forgot-password-container">
         <Grid className="forgot-password-grid-illustration" item lg={6}>
@@ -37,13 +67,7 @@ export const ForgotPassword: FC<ForgotPasswordInterface> = () => {
                 <Typography variant="body1" component="p" className="forgot-password-subtitle">Suivre le processus pour réinitialiser votre mot de passe et regagner l'accès à votre compte.</Typography>
             </Box>
             <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
-                <EmailValidation
-                    input={input}
-                    setInput={setInput}
-                    error={error}
-                    setError={setError}
-                    onChangeStep={handleChangeStep}
-                />
+                {FORM_VALIDATION_STEP}
             </Box>
         </Grid>
         <Link className="hidden-link" href="http://www.freepik.com">Designed by vectorjuice / Freepik</Link>

@@ -40,4 +40,34 @@ export class ForgotPasswordValidation {
 
     }
 
+    checkResetPassword() {
+        if(!this.input?.password) {
+            return {
+                isValid: false,
+                message: 'Vous devez saisir un mot de passe'
+            }
+        }
+
+        if(this.input.password.trim().length < 10) {
+            return {
+                isValid: false,
+                message: "Vouz devew choisir un mot depasse au moins 10 charactères."
+            }
+        }
+
+
+        if (this.input.password !== this.input.confirmPassword) {
+            return {
+                isValid: false,
+                message: "Votre confirmation n'est pas identique à votre mot de passe."
+            }
+        }
+
+        return {
+            isValid: true,
+            message: ""
+        }
+
+    }
+
 }

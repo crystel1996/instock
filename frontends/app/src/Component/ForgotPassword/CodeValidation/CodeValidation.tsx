@@ -31,6 +31,7 @@ export const CodeValidation: FC<CodeValidationInterface> = (props) => {
         const checkCodeValidation = emailValidation.checkCodeValidation();
 
         if (checkCodeValidation.isValid) {
+            props.setError(undefined);
             props.onChangeStep(2);
             return;
         }

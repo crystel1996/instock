@@ -5,10 +5,13 @@ import { ForgotPasswordInputInterface, ForgotPasswordInterface } from "./interfa
 import ForgotPasswordIllustration from './assets/forgot-password_illustration.jpg'
 import { EmailValidation } from "./EmailValidation";
 import { CodeValidation } from "./CodeValidation";
+import { ResetPassword } from "./ResetPassword";
 
 const DEFAULT_INPUT: ForgotPasswordInputInterface = {
     email: '',
-    code: ''
+    code: '',
+    password: '',
+    confirmPassword: ''
 }
 
 export const ForgotPassword: FC<ForgotPasswordInterface> = () => {
@@ -37,6 +40,14 @@ export const ForgotPassword: FC<ForgotPasswordInterface> = () => {
                         error={error}
                         setError={setError}
                         onChangeStep={handleChangeStep}
+                    />
+        }
+        if (step === 2) {
+            return  <ResetPassword
+                        input={input}
+                        setInput={setInput}
+                        error={error}
+                        setError={setError}
                     />
         }
         return  <EmailValidation

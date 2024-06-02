@@ -5,9 +5,5 @@ export const LoginRoute: RouterInterface[] = [
     {
         path: '/login',
         element: <LoginPage />
-    },
-    {
-        path: '/',
-        element: <LoginPage />
     }
 ];

@@ -31,6 +31,7 @@ const StyledWrapper = styled(Grid)`
     height: 100vh;
     overflow: hidden;
     color: ${cyan[50]};
+    text-align: center;
     .notFound-to-home {
         color: ${cyan[50]};
         text-decoration: underline;

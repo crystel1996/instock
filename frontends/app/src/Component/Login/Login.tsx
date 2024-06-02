@@ -124,7 +124,7 @@ export const Login: FC<LoginComponentInterface> = (props) => {
                             control={<Checkbox sx={checkBoxInput} onChange={handleChange} checked={input.rememberMe} name="rememberMe" />}
                             label="Se souvenir de moi"
                         />
-                        <Link className="login-to-forgot-password" href="http://www.freepik.com">Mot de passe oublié?</Link>
+                        <Link className="login-to-forgot-password" href="/forgot-password">Mot de passe oublié?</Link>
                     </Box>
                     <Button type="submit" variant="contained">Se connecter</Button>
                     <Box py={1}>

@@ -1,11 +1,18 @@
-import { ChangeEvent, FC, FormEvent } from "react";
+import { ChangeEvent, FC, FormEvent, useEffect, useState } from "react";
 import { Alert, Box, Button, Grid, Link, TextField, Typography, styled } from "@mui/material";
+import AES from 'crypto-js/aes';
 import { cyan } from "@mui/material/colors";
 import { CodeValidationInterface } from "./interface";
 import { ForgotPasswordValidation } from "../../../Helper";
+import Config from './../../../Config/config.json'
 
 export const CodeValidation: FC<CodeValidationInterface> = (props) => {
-    
+    const [emailHashed, setEmailHashed] = useState<string>();
+    useEffect(() => {
+        const hashedEmail = AES.encrypt(props.input.email, Config.SECRET_KEY_HMAC).toString();
+        setEmailHashed(hashedEmail);
+    }, []);
+
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.type === 'checkbox') {
             props.setInput((prev) => {
@@ -65,9 +72,11 @@ export const CodeValidation: FC<CodeValidationInterface> = (props) => {
                             className="input-code-validation-text"
                         />
                     </Box>
-                    <Box>
-                        <Link className="code-validation-to-resend-code" href="/resend-code">Code renvoyé?</Link>
-                    </Box>
+                    {emailHashed && (
+                        <Box py={1}>
+                            <Link className="code-validation-to-resend-code" href={`/resend-code?e=${emailHashed}`}>Code renvoyé?</Link>
+                        </Box>
+                    )}
                     <Box py={1}>
                         <Button className="code-validation-submit" type="submit" variant="contained">Vérifier</Button>
                     </Box>

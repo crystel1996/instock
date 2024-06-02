@@ -1,4 +1,5 @@
 import { RegisterInputInterface } from "../../Component";
+import { EMAIL_REGEX } from "../Regex";
 
 export class RegisterValidation {
     input: RegisterInputInterface | undefined = undefined;
@@ -16,8 +17,7 @@ export class RegisterValidation {
 
     isValidEmail() {
         if(this.input?.email) {
-            const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-            return this.input.email.match(emailRegex);
+            return this.input.email.match(EMAIL_REGEX);
         }
         return false;
 

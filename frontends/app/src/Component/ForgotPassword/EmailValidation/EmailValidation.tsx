@@ -2,6 +2,7 @@ import { ChangeEvent, FC, FormEvent } from "react";
 import { Alert, Box, Button, Grid, Link, TextField, Typography, styled } from "@mui/material";
 import { cyan } from "@mui/material/colors";
 import { EmailValidationInterface } from "./interface";
+import { ForgotPasswordValidation } from "../../../Helper";
 
 export const EmailValidation: FC<EmailValidationInterface> = (props) => {
     
@@ -25,6 +26,17 @@ export const EmailValidation: FC<EmailValidationInterface> = (props) => {
 
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        const emailValidation = new ForgotPasswordValidation(props.input);
+
+        const checkEmailValidity = emailValidation.checkEmailValidity();
+
+        if (checkEmailValidity.isValid) {
+            props.onChangeStep(1);
+            return;
+        }
+
+        props.setError(checkEmailValidity.message);
+
     };
 
     return  <StyledWrapper 
@@ -36,6 +48,7 @@ export const EmailValidation: FC<EmailValidationInterface> = (props) => {
                 alignItems="center"
             >
                 <Typography variant="body1" component="p" className="email-validation-subtitle">Entrez votre adresse e-mail.</Typography>
+                {props.error && <Alert severity="error">{props.error}</Alert>}
                 <form className="email-validation-form__form-body" onSubmit={handleSubmit}>
                     <Box py={1}>
                         <TextField

@@ -12,6 +12,12 @@ const DEFAULT_INPUT: ForgotPasswordInputInterface = {
 export const ForgotPassword: FC<ForgotPasswordInterface> = () => {
     const [input, setInput] = useState<ForgotPasswordInputInterface>(DEFAULT_INPUT);
     const [error, setError] = useState<string>();
+    const [step, setStep] = useState<number>(0);
+
+    const handleChangeStep = (step: number) => {
+        setStep(step);
+    };
+
     return <StyledWrapper container className="forgot-password-container">
         <Grid className="forgot-password-grid-illustration" item lg={6}>
             <Box className="forgot-password-illustration" component="img" alt="Login illustration page desgined by vectorjuice" src={ForgotPasswordIllustration} />
@@ -27,7 +33,6 @@ export const ForgotPassword: FC<ForgotPasswordInterface> = () => {
             alignItems="center"
         >
             <Box className="forgot-password-form-title" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
-                {error && <Alert severity="error">{error}</Alert>}
                 <Typography variant="h1" component="h1">InStock</Typography>
                 <Typography variant="body1" component="p" className="forgot-password-subtitle">Suivre le processus pour réinitialiser votre mot de passe et regagner l'accès à votre compte.</Typography>
             </Box>
@@ -35,6 +40,9 @@ export const ForgotPassword: FC<ForgotPasswordInterface> = () => {
                 <EmailValidation
                     input={input}
                     setInput={setInput}
+                    error={error}
+                    setError={setError}
+                    onChangeStep={handleChangeStep}
                 />
             </Box>
         </Grid>

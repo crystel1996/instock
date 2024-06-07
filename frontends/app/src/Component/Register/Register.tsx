@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, FormEvent, useState } from "react";
+import { ChangeEvent, FC, FormEvent, useEffect, useState } from "react";
 import { Alert, Box, Button, Grid, Link, TextField, Typography, styled } from "@mui/material";
 import { cyan } from '@mui/material/colors';
 import { RegisterComponentInterface, RegisterInputInterface } from "./interface";
@@ -16,6 +16,10 @@ export const Register: FC<RegisterComponentInterface> = (props) => {
 
     const [input, setInput] = useState<RegisterInputInterface>(DEFAULT_INPUT);
     const [error, setError] = useState<string>();
+
+    useEffect(() => {
+        setError(props.error);
+    }, [props.error])
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.type === 'checkbox') {
@@ -43,7 +47,7 @@ export const Register: FC<RegisterComponentInterface> = (props) => {
         const checkRegisterValidity = registerValidation.checkRegisterValidity();
 
         if (checkRegisterValidity?.isValid) {
-            console.log('[INPUT', input);
+            props.onSubmit(input);
             return;
         }
 

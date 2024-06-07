@@ -25,16 +25,36 @@ export class UserService {
             throw new Error("L'email n'est pas valide!");
         }
 
+        const existUserWithEmail = await this.findUserByColumn(createUserData.email, 'email');
 
-        const hashedPassword = await this.hashPassword.hashed(createUserData.password);
+        if (existUserWithEmail) {
+            throw new Error("L'adresse email est déja utilisé par un autre utilisateur.");
+        }
+
+
+        const hashedPassword = await this.hashPassword.hashPassword(createUserData.password);
 
         const userInput: CreateUserInput = {
             ...createUserData,
+            email: createUserData.email.trim(),
             password: hashedPassword
         }
 
         const newUser = this.userRepository.create(userInput);
         return this.userRepository.save(newUser);
+    }
+
+    async findUserByColumn(value: string, column: string) {
+        const user = await this.userRepository.findOneBy({
+            [column]: value
+        });
+
+        if (!user) {
+            throw new Error('Utilisateur introuvable!')
+        }
+
+        return user;
+
     }
 
 }

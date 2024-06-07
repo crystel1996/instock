@@ -5,11 +5,20 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './module/User/user.module';
 import { ENTITIES } from './entity';
+import { JwtModule } from '@nestjs/jwt';
+import { AuthenticationModule } from './module/Authentication/authentication.module';
+
+const configService = new ConfigService();
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+    }),
+    JwtModule.register({
+      global: true,
+      secret: configService.get('SECRET_JWT'),
+      signOptions: { expiresIn: '60s' },
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
@@ -29,7 +38,8 @@ import { ENTITIES } from './entity';
         synchronize: false,
       })
     }),
-    UsersModule
+    UsersModule,
+    AuthenticationModule
   ],
   controllers: [],
   providers: [],

@@ -9,8 +9,18 @@ type User {
   password: String!
 }
 
+type Login {
+  accessToken: String!
+}
+
 type Query {
   test: String!
+  login(input: LoginInput!): Login!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
 }
 
 type Mutation {

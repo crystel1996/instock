@@ -21,9 +21,15 @@ const DEFAULT_INPUT: LoginInputInterface = {
 export const Login: FC<LoginComponentInterface> = (props) => {
 
     const [input, setInput] = useState<LoginInputInterface>(DEFAULT_INPUT);
-    const [error, setError] = useState<string>();
+    const [error, setError] = useState<string>(props.error ?? '');
 
     const lsRememberMe = localStorage.getItem('rememberMe');
+
+    useEffect(() => {
+        
+        setError(props.error ?? '');
+        
+    }, [props.error]);
 
     useEffect(() => {
         if(lsRememberMe && lsRememberMe !== 'null') {
@@ -62,7 +68,7 @@ export const Login: FC<LoginComponentInterface> = (props) => {
 
         if (checkLoginValidity?.isValid) {
             localStorage.setItem('rememberMe', input.rememberMe ? input.email : 'null');
-            console.log('[INPUT', input);
+            props.onSubmit(input);
             return;
         }
 
@@ -126,7 +132,7 @@ export const Login: FC<LoginComponentInterface> = (props) => {
                         />
                         <Link className="login-to-forgot-password" href="/forgot-password">Mot de passe oublié?</Link>
                     </Box>
-                    <Button type="submit" variant="contained">Se connecter</Button>
+                    <Button disabled={props.loading} type="submit" variant="contained">Se connecter</Button>
                     <Box py={1}>
                         <Typography component="p" variant="body2">Vous n'avez pas encore une compte? <Link className="login-to-register" href="/register">Inscrivez vous ici.</Link></Typography>
                     </Box>

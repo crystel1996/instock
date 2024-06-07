@@ -34,6 +34,7 @@ const LogoTypography = {
 const pages = [
     { label: 'Produits', link: '/products' }
 ];
+
 const settings = [
     { label: 'Paramètre', link: '/setting' },
     { label: 'Deconnexion', link: '/logout' },

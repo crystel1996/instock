@@ -1,4 +1,8 @@
-export interface LoginComponentInterface {}
+export interface LoginComponentInterface {
+    onSubmit: (input: LoginInputInterface) => void;
+    error?: string;
+    loading?: boolean;
+}
 
 export interface LoginInputInterface {
     email: string;

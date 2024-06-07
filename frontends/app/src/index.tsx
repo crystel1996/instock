@@ -3,15 +3,19 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { CssBaseline } from '@mui/material';
+import { ApolloProvider } from '@apollo/client';
+import { client } from './Services';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <CssBaseline />
-      <App />
-    <CssBaseline />
+    <ApolloProvider client={client}>
+      <CssBaseline />
+        <App />
+      <CssBaseline />
+    </ApolloProvider>
   </React.StrictMode>
 );
 

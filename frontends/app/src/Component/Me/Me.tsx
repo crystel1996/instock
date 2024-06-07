@@ -4,7 +4,7 @@ import { useQuery } from "@apollo/client";
 import { MeQuery } from "../../Services/Graphql/User";
 
 export const Me: FC<MePropsInterface> = (props) => {
-
+    
     const userMe = useQuery(MeQuery, {
         variables: {
             input: {

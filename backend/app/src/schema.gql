@@ -9,15 +9,36 @@ type User {
   password: String!
 }
 
+type Login {
+  accessToken: String!
+}
+
+type Register {
+  accessToken: String!
+}
+
 type Query {
-  test: String!
+  login(input: LoginInput!): Login!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
 }
 
 type Mutation {
   createUser(createUserData: CreateUserInput!): User!
+  register(input: RegisterInput!): Register!
 }
 
 input CreateUserInput {
+  username: String!
+  email: String!
+  password: String!
+  confirmPassword: String!
+}
+
+input RegisterInput {
   username: String!
   email: String!
   password: String!

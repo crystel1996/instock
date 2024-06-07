@@ -6,6 +6,7 @@ import { Repository } from "typeorm";
 import { UserService } from "../User/User.service";
 import { HashPassword } from "src/config";
 import { JwtService } from "@nestjs/jwt";
+import { RegisterInput } from "src/dto/Register/register.input";
 
 @Injectable()
 export class AuthenticationService {
@@ -25,6 +26,10 @@ export class AuthenticationService {
 
         const user = await this.userService.findUserByColumn(input.email, 'email');
 
+        if (!user) {
+            throw new Error('Utilisateur introuvable!');
+        }
+
         const isMatchPassword = await this.hashPassword.comparePassword(input.password, user.password);
 
         if (!isMatchPassword) {
@@ -40,4 +45,21 @@ export class AuthenticationService {
         }
 
     }
+
+    async register(input: RegisterInput) {
+        
+
+        const user = await this.userService.createUser(input);
+
+        const payload = { sub: user.id, username: user.email };
+
+        const access_token = await this.jwtService.signAsync(payload);
+
+        return {
+            accessToken: access_token
+        }
+
+
+    }
+
 }

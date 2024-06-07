@@ -15,8 +15,12 @@ export class UserService {
 
     async createUser(createUserData: CreateUserInput) {
 
+        if (!createUserData.email || !createUserData.password || !createUserData.username) {
+            throw Error("Tous les champs sont indispensables!");
+        }
+
         if (createUserData.password !== createUserData.confirmPassword) {
-            throw new Error("Le mot de passe et la confirmation du mot de passe n'est pas identique!");
+            throw new Error("Le mot de passe et la confirmation du mot de passe ne sont pas identiques!");
         }
 
         const isValidEmail = this.emailConfig.isValidEmail(createUserData.email)
@@ -48,10 +52,6 @@ export class UserService {
         const user = await this.userRepository.findOneBy({
             [column]: value
         });
-
-        if (!user) {
-            throw new Error('Utilisateur introuvable!')
-        }
 
         return user;
 

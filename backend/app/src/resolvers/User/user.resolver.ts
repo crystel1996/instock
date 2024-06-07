@@ -9,11 +9,6 @@ export class UserResolver {
         private userService: UserService
     ) {}
 
-    @Query(() => String)
-    test() {
-        return 'Hello World!'
-    }
-
     @Mutation((returns) => User)
     createUser(@Args('createUserData') createUserData: CreateUserInput) {
         return this.userService.createUser(createUserData);

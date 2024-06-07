@@ -1,3 +1,7 @@
 import { RouteObject } from "react-router-dom";
 
-export type RouterInterface  = RouteObject;
+export interface RouteConfigInterface {
+    accessWithAnonymous?: boolean
+}
+
+export type RouterInterface  = RouteObject & RouteConfigInterface;

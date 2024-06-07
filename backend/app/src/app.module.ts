@@ -18,7 +18,7 @@ const configService = new ConfigService();
     JwtModule.register({
       global: true,
       secret: configService.get('SECRET_JWT'),
-      signOptions: { expiresIn: '60s' },
+      signOptions: { expiresIn: '3600s' },
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,

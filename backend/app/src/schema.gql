@@ -18,7 +18,12 @@ type Register {
 }
 
 type Query {
+  me(input: UserMeInput!): User
   login(input: LoginInput!): Login!
+}
+
+input UserMeInput {
+  accessToken: String!
 }
 
 input LoginInput {

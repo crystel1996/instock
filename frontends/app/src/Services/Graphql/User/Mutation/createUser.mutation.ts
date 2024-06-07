@@ -1,9 +1,9 @@
 import { gql } from "@apollo/client";
-import { createUser as createUserFragment } from './createUser.fragment'
+import { createUserFragment } from './createUser.fragment'
 
-export const createUser = gql`
+export const createUserMutation = gql`
 
-    mutation createUser($input: CreateUserInput!) {
+    mutation createUserMutation($input: CreateUserInput!) {
         createUser(input: $input) {
             ...createUser
         }

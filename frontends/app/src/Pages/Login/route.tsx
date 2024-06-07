@@ -4,6 +4,7 @@ import { LoginPage } from "./Login";
 export const LoginRoute: RouterInterface[] = [
     {
         path: '/login',
+        accessWithAnonymous: true,
         element: <LoginPage />
     }
 ];

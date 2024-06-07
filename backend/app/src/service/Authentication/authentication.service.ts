@@ -7,6 +7,7 @@ import { UserService } from "../User/User.service";
 import { HashPassword } from "src/config";
 import { JwtService } from "@nestjs/jwt";
 import { RegisterInput } from "src/dto/Register/register.input";
+import { ConfigService } from "@nestjs/config";
 
 @Injectable()
 export class AuthenticationService {
@@ -48,7 +49,6 @@ export class AuthenticationService {
 
     async register(input: RegisterInput) {
         
-
         const user = await this.userService.createUser(input);
 
         const payload = { sub: user.id, username: user.email };
@@ -59,7 +59,23 @@ export class AuthenticationService {
             accessToken: access_token
         }
 
+    }
 
+    async verify(token: string) {
+
+        const configService = new ConfigService();
+
+        const decoded = this.jwtService.verify(token, {
+            secret: configService.get('SECRET_JWT')
+        });
+
+        const user = await this.userService.findUserByColumn(decoded.email, 'email');
+
+        if (!user) {
+            return null;
+        }
+
+        return user;
     }
 
 }

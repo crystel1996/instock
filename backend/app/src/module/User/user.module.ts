@@ -3,6 +3,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { EmailConfig, HashPassword } from "src/config";
 import { User } from "src/model/User/User.entity";
 import { UserResolver } from "src/resolvers/User/user.resolver";
+import { AuthenticationService } from "src/service/Authentication/authentication.service";
 import { UserService } from "src/service/User/User.service";
 
 
@@ -11,6 +12,7 @@ import { UserService } from "src/service/User/User.service";
   providers: [
     UserResolver,
     UserService,
+    AuthenticationService,
     HashPassword,
     EmailConfig
   ],

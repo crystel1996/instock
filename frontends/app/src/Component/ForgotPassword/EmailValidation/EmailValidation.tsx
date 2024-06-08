@@ -2,7 +2,7 @@ import { ChangeEvent, FC, FormEvent } from "react";
 import { Alert, Box, Button, Grid, TextField, Typography, styled } from "@mui/material";
 import { cyan } from "@mui/material/colors";
 import { EmailValidationInterface } from "./interface";
-import { ForgotPasswordValidation } from "../../../Helper";
+import { Email, ForgotPasswordValidation } from "../../../Helper";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { FindUserByColumnQuery } from "../../../Services/Graphql/User";
 import { GenerateUserCodeValidationMutation } from "../../../Services/Graphql";
@@ -10,8 +10,19 @@ import { GenerateUserCodeValidationMutation } from "../../../Services/Graphql";
 export const EmailValidation: FC<EmailValidationInterface> = (props) => {
 
     const [generateUserCodeValidation] = useMutation(GenerateUserCodeValidationMutation, {
-        onCompleted: () => {
-            props.onChangeStep(1);
+        onCompleted: async (result) => {
+            const emailService = new Email({
+                emailReceiver: props.input.email
+            });
+            await emailService.send({
+                code: result.generateUserCodeValidation.code
+            }).then((result) => {
+                if (result.success) {
+                    props.onChangeStep(1);
+                } else {
+                    props.setError("Une erreur a été survenue.");
+                }
+            });
         },
         onError: (result) => {
             props.setError(result.message);

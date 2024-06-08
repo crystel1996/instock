@@ -30,7 +30,7 @@ export class UserCodeValidationService {
     }
 
     async generateUserCodeValidation(input: GenerateUserCodeValidationInput) {
-        const generatedCount = await this.countGeneratedCodeByEmail(input.email.trim(), input.type, 'EXPIRED');
+        const generatedCount = await this.countGeneratedCodeByEmail(input.email.trim(), input.type, 'VALIDATED');
 
 
         if (generatedCount === 3) {
@@ -67,32 +67,28 @@ export class UserCodeValidationService {
             throw new Error("Utilisateur introuvable");
         }
 
-        const codeValidation = await this.userCodeValidationRepository.findOneBy({
-            email: input.email.trim(),
-            idUser: user.id,
-            code: input.code.trim(),
-            type: input.type
+        const lastCodeValidation = await this.userCodeValidationRepository.findOne({
+            where: {
+                email: input.email.trim(),
+                idUser: user.id,
+                type: input.type,
+            },
+            order: { createdAt: 'DESC' },
         });
-
-        if (!codeValidation) {
-            throw new Error("Code invalide!");
-        }
 
         const now = dayjs.utc();
 
-        console.log('TEST', {
-            check: dayjs(codeValidation.expiredAt).isBefore(now),
-            expiredAt: codeValidation.expiredAt,
-            now: now
-        });
-        
-        if (dayjs(codeValidation.expiredAt).isBefore(now)) {
+        if (dayjs(lastCodeValidation.expiredAt).isBefore(now)) {
             throw new Error("Code expiré");
         }
 
-        codeValidation.status = 'EXPIRED';
+        if (input.code.trim() !== lastCodeValidation?.code) {
+            throw new Error("Code invalide!");
+        }
 
-        await this.userCodeValidationRepository.save(codeValidation);
+        lastCodeValidation.status = 'EXPIRED';
+
+        await this.userCodeValidationRepository.save(lastCodeValidation);
 
         return true;
 

@@ -3,16 +3,33 @@ import { Alert, Box, Button, Grid, TextField, Typography, styled } from "@mui/ma
 import { cyan } from "@mui/material/colors";
 import { EmailValidationInterface } from "./interface";
 import { ForgotPasswordValidation } from "../../../Helper";
-import { useLazyQuery } from "@apollo/client";
+import { useLazyQuery, useMutation } from "@apollo/client";
 import { FindUserByColumnQuery } from "../../../Services/Graphql/User";
+import { GenerateUserCodeValidationMutation } from "../../../Services/Graphql";
 
 export const EmailValidation: FC<EmailValidationInterface> = (props) => {
+
+    const [generateUserCodeValidation] = useMutation(GenerateUserCodeValidationMutation, {
+        onCompleted: () => {
+            props.onChangeStep(1);
+        },
+        onError: (result) => {
+            props.setError(result.message);
+        }
+    });
 
     const [findUserByEmail] = useLazyQuery(FindUserByColumnQuery, {
         onCompleted: (result) => {
             if(result.findUserByColumn?.id) {
                 props.setError(undefined);
-                props.onChangeStep(1);
+                generateUserCodeValidation({
+                    variables: {
+                        input: {
+                            email: result.findUserByColumn.email,
+                            type: "FORGOT_PASSWORD"
+                        }
+                    }
+                });
                 return;
             }
             props.setError("Utilisateur introuvable!");

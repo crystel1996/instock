@@ -24,6 +24,7 @@ type UserCodeValidation {
   email: String!
   expiredAt: DateTime!
   type: String!
+  status: String!
 }
 
 """

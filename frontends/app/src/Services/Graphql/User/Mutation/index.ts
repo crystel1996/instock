@@ -1,2 +1,1 @@
-export * from './createUser.fragment';
-export * from './createUser.mutation';
+export * from './CreateUser';

@@ -5,11 +5,25 @@ import { cyan } from "@mui/material/colors";
 import { CodeValidationInterface } from "./interface";
 import { Email, ForgotPasswordValidation } from "../../../Helper";
 import Config from './../../../Config/config.json'
+import { useLazyQuery } from "@apollo/client";
+import { VerifyUserCodeValidationQuery } from "../../../Services/Graphql";
 
 export const CodeValidation: FC<CodeValidationInterface> = (props) => {
     
     const [emailHashed, setEmailHashed] = useState<string>();
     const [info, setInfo] = useState<string>();
+
+    const [verifyCodeValidation] = useLazyQuery(VerifyUserCodeValidationQuery, {
+        onCompleted: (result) => {
+            console.log(result)
+            if (result.verifyUserCodeValidation) {
+                //props.onChangeStep(2);
+            }
+        },
+        onError: (result) => {
+            props.setError(result.message);
+        }
+    });
 
     useEffect(() => {
         const hashedEmail = AES.encrypt(props.input.email, Config.SECRET_KEY_HMAC).toString();
@@ -59,7 +73,15 @@ export const CodeValidation: FC<CodeValidationInterface> = (props) => {
 
         if (checkCodeValidation.isValid) {
             props.setError(undefined);
-            props.onChangeStep(2);
+            verifyCodeValidation({
+                variables: {
+                    input: {
+                        email: props.input.email,
+                        code: props.input.code,
+                        type: "FORGOT_PASSWORD"
+                    }
+                }
+            });
             return;
         }
 

@@ -19,17 +19,18 @@ export class UserCodeValidationService {
         dayjs.extend(utc);
     }
 
-    async countGeneratedCodeByEmail(email: string, type: string) {
+    async countGeneratedCodeByEmail(email: string, type: string, status: string) {
         return this.userCodeValidationRepository.count({
             where: {
                 email: email,
-                type
+                type,
+                status
             }
         });
     }
 
     async generateUserCodeValidation(input: GenerateUserCodeValidationInput) {
-        const generatedCount = await this.countGeneratedCodeByEmail(input.email.trim(), input.type);
+        const generatedCount = await this.countGeneratedCodeByEmail(input.email.trim(), input.type, 'EXPIRED');
 
 
         if (generatedCount === 3) {
@@ -51,7 +52,8 @@ export class UserCodeValidationService {
             idUser: user.id,
             email: user.email,
             expiredAt: now.add(1, 'hours').toDate(),
-            type: input.type
+            type: input.type,
+            status: 'VALIDATED'
         });
         return this.userCodeValidationRepository.save(newUserCodeValidation);
 
@@ -73,14 +75,24 @@ export class UserCodeValidationService {
         });
 
         if (!codeValidation) {
-            throw new Error("Code introuvable");
+            throw new Error("Code invalide!");
         }
 
         const now = dayjs.utc();
+
+        console.log('TEST', {
+            check: dayjs(codeValidation.expiredAt).isBefore(now),
+            expiredAt: codeValidation.expiredAt,
+            now: now
+        });
         
         if (dayjs(codeValidation.expiredAt).isBefore(now)) {
             throw new Error("Code expiré");
         }
+
+        codeValidation.status = 'EXPIRED';
+
+        await this.userCodeValidationRepository.save(codeValidation);
 
         return true;
 

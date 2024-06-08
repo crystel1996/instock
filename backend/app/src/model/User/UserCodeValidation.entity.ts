@@ -28,6 +28,10 @@ export class UserCodeValidation {
     @Field()
     type: string;
 
+    @Column({ name: 'status' })
+    @Field()
+    status: string;
+
     @Column({ name: 'created_at' })
     @CreateDateColumn()
     createdAt!: Date;

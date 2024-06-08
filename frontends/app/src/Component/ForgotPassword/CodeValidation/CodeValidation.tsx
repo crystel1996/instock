@@ -1,36 +1,70 @@
-import { ChangeEvent, FC, FormEvent, MouseEvent, useEffect, useState } from "react";
+import { ChangeEvent, FC, FormEvent, MouseEvent, useState } from "react";
 import { Alert, Box, Button, Grid, Link, TextField, Typography, styled } from "@mui/material";
-import AES from 'crypto-js/aes';
 import { cyan } from "@mui/material/colors";
 import { CodeValidationInterface } from "./interface";
 import { Email, ForgotPasswordValidation } from "../../../Helper";
-import Config from './../../../Config/config.json'
+import { useLazyQuery, useMutation } from "@apollo/client";
+import { GenerateUserCodeValidationMutation, VerifyUserCodeValidationQuery } from "../../../Services/Graphql";
 
 export const CodeValidation: FC<CodeValidationInterface> = (props) => {
     
-    const [emailHashed, setEmailHashed] = useState<string>();
     const [info, setInfo] = useState<string>();
 
-    useEffect(() => {
-        const hashedEmail = AES.encrypt(props.input.email, Config.SECRET_KEY_HMAC).toString();
-        setEmailHashed(hashedEmail);
-    }, [props.input.email]);
+    const [verifyCodeValidation] = useLazyQuery(VerifyUserCodeValidationQuery, {
+        onCompleted: (result) => {
+            console.log(result)
+            if (result.verifyUserCodeValidation) {
+                props.onChangeStep(2);
+            }
+        },
+        onError: (result) => {
+            props.setError(result.message);
+        }
+    });
+
+    const [generateUserCodeValidation] = useMutation(GenerateUserCodeValidationMutation, {
+        onCompleted: () => {
+            props.setError(undefined);
+            setInfo("Un nouveau code a été renvoyé vers votre email.");
+        },
+        onError: (result) => {
+            props.setError(result.message);
+            setInfo(undefined);
+        }
+    });
 
     const handleResendCode = async (e: MouseEvent<HTMLElement>) => {
         e.stopPropagation();
-        const emailService = new Email({
-            emailReceiver: props.input.email
-        });
 
-        await emailService.send().then((result) => {
-            if (result.success) {
-                props.setError(undefined);
-                setInfo(result.message);
-            } else {
-                setInfo(undefined);
-                props.setError(result.message);
+        await generateUserCodeValidation({
+            variables: {
+                input: {
+                    email: props.input.email,
+                    type: "FORGOT_PASSWORD"
+                }
             }
-        });
+        }).then(async(result: any) => {
+
+            if (result.errors) {
+                return;
+            }
+
+            const emailService = new Email({
+                emailReceiver: props.input.email
+            });
+            await emailService.send({
+                code: result.data.generateUserCodeValidation.code
+            }).then((result) => {
+                if (result.success) {
+                    props.setError(undefined);
+                    setInfo(result.message);
+                } else {
+                    setInfo(undefined);
+                    props.setError(result.message);
+                }
+            });
+        })
+        
     };
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -59,7 +93,15 @@ export const CodeValidation: FC<CodeValidationInterface> = (props) => {
 
         if (checkCodeValidation.isValid) {
             props.setError(undefined);
-            props.onChangeStep(2);
+            verifyCodeValidation({
+                variables: {
+                    input: {
+                        email: props.input.email,
+                        code: props.input.code,
+                        type: "FORGOT_PASSWORD"
+                    }
+                }
+            });
             return;
         }
 
@@ -93,7 +135,7 @@ export const CodeValidation: FC<CodeValidationInterface> = (props) => {
                             className="input-code-validation-text"
                         />
                     </Box>
-                    {emailHashed && (
+                    {props.input.email && (
                         <Box py={1}>
                             <Link onClick={handleResendCode} component="p" className="code-validation-to-resend-code">Code renvoyé?</Link>
                         </Box>

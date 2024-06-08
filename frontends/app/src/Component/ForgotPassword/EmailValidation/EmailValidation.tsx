@@ -2,9 +2,53 @@ import { ChangeEvent, FC, FormEvent } from "react";
 import { Alert, Box, Button, Grid, TextField, Typography, styled } from "@mui/material";
 import { cyan } from "@mui/material/colors";
 import { EmailValidationInterface } from "./interface";
-import { ForgotPasswordValidation } from "../../../Helper";
+import { Email, ForgotPasswordValidation } from "../../../Helper";
+import { useLazyQuery, useMutation } from "@apollo/client";
+import { FindUserByColumnQuery } from "../../../Services/Graphql/User";
+import { GenerateUserCodeValidationMutation } from "../../../Services/Graphql";
 
 export const EmailValidation: FC<EmailValidationInterface> = (props) => {
+
+    const [generateUserCodeValidation] = useMutation(GenerateUserCodeValidationMutation, {
+        onCompleted: async (result) => {
+            const emailService = new Email({
+                emailReceiver: props.input.email
+            });
+            await emailService.send({
+                code: result.generateUserCodeValidation.code
+            }).then((result) => {
+                if (result.success) {
+                    props.onChangeStep(1);
+                } else {
+                    props.setError("Une erreur a été survenue.");
+                }
+            });
+        },
+        onError: (result) => {
+            props.setError(result.message);
+        }
+    });
+
+    const [findUserByEmail] = useLazyQuery(FindUserByColumnQuery, {
+        onCompleted: (result) => {
+            if(result.findUserByColumn?.id) {
+                props.setError(undefined);
+                generateUserCodeValidation({
+                    variables: {
+                        input: {
+                            email: result.findUserByColumn.email,
+                            type: "FORGOT_PASSWORD"
+                        }
+                    }
+                });
+                return;
+            }
+            props.setError("Utilisateur introuvable!");
+        },
+        onError: (result) => {
+            props.setError(result.message);
+        }
+    });
     
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.type === 'checkbox') {
@@ -31,8 +75,14 @@ export const EmailValidation: FC<EmailValidationInterface> = (props) => {
         const checkEmailValidity = emailValidation.checkEmailValidity();
 
         if (checkEmailValidity.isValid) {
-            props.setError(undefined);
-            props.onChangeStep(1);
+            findUserByEmail({
+                variables: {
+                    input: {
+                        value: props.input.email,
+                        column: 'email'
+                    }
+                }
+            });
             return;
         }
 

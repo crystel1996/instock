@@ -1,4 +1,4 @@
-import { EmailConstructorInterface } from "./interface";
+import { EmailConstructorInterface, EmailSendInterface } from "./interface";
 
 export class Email {
     input: EmailConstructorInterface | undefined = undefined;
@@ -6,10 +6,10 @@ export class Email {
         this.input = input;
     }
 
-    async send () {
+    async send (input: EmailSendInterface) {
         return {
             success: true,
-            message: 'Le code a été renvoyé'
+            message: `Le code a été envoye sur votre email.`
         }
     }
 }

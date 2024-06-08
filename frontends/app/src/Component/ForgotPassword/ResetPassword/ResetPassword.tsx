@@ -67,7 +67,7 @@ export const ResetPassword: FC<ResetPasswordInterface> = (props) => {
                     <Box py={1}>
                         <TextField
                             required
-                            id="reset-password-forgot-password"
+                            id="reset-password-confirm-forgot-password"
                             label="Confirmation"
                             type="password"
                             variant="filled"

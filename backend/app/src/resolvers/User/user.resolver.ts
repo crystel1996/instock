@@ -1,5 +1,6 @@
 import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
 import { CreateUserInput } from "src/dto/User/createUser.input";
+import { FindUserByColumnInput } from "src/dto/User/findUserByColumn.input";
 import { UserMeInput } from "src/dto/User/userMe.input";
 import { User } from "src/model/User/User.entity";
 import { AuthenticationService } from "src/service/Authentication/authentication.service";
@@ -15,6 +16,11 @@ export class UserResolver {
     @Query(() => User, { nullable: true })
     me(@Args('input') input: UserMeInput) {
         return this.authService.verify(input.accessToken);
+    }
+
+    @Query(() => User, { nullable: true })
+    findUserByColumn(@Args('input') input: FindUserByColumnInput) {
+        return this.userService.findUserByColumn(input.value, input.column);
     }
 
     @Mutation((returns) => User)

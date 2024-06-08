@@ -17,13 +17,35 @@ type Register {
   accessToken: String!
 }
 
+type UserCodeValidation {
+  id: ID!
+  code: String!
+  idUser: String
+  email: String!
+  expiredAt: DateTime!
+  type: String!
+  status: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type Query {
   me(input: UserMeInput!): User
+  findUserByColumn(input: FindUserByColumnInput!): User
   login(input: LoginInput!): Login!
+  verifyUserCodeValidation(input: VerifyUserCodeValidationInput!): Boolean!
 }
 
 input UserMeInput {
   accessToken: String!
+}
+
+input FindUserByColumnInput {
+  value: String!
+  column: String!
 }
 
 input LoginInput {
@@ -31,9 +53,16 @@ input LoginInput {
   password: String!
 }
 
+input VerifyUserCodeValidationInput {
+  email: String!
+  code: String!
+  type: String!
+}
+
 type Mutation {
   createUser(createUserData: CreateUserInput!): User!
   register(input: RegisterInput!): Register!
+  generateUserCodeValidation(input: GenerateUserCodeValidationInput!): UserCodeValidation!
 }
 
 input CreateUserInput {
@@ -48,4 +77,9 @@ input RegisterInput {
   email: String!
   password: String!
   confirmPassword: String!
+}
+
+input GenerateUserCodeValidationInput {
+  email: String!
+  type: String!
 }

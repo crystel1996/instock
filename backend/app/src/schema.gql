@@ -17,10 +17,26 @@ type Register {
   accessToken: String!
 }
 
+type UserCodeValidation {
+  id: ID!
+  code: String!
+  idUser: String
+  email: String!
+  expiredAt: DateTime!
+  type: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type Query {
   me(input: UserMeInput!): User
   findUserByColumn(input: FindUserByColumnInput!): User
   login(input: LoginInput!): Login!
+  verifyUserCodeValidation: Boolean!
+  generateUserCodeValidation: UserCodeValidation!
 }
 
 input UserMeInput {

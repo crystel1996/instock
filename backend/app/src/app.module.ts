@@ -7,6 +7,7 @@ import { UsersModule } from './module/User/user.module';
 import { ENTITIES } from './entity';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthenticationModule } from './module/Authentication/authentication.module';
+import { UserCodeValidationModule } from './module/User/userCodeValidation.module';
 
 const configService = new ConfigService();
 
@@ -35,11 +36,12 @@ const configService = new ConfigService();
         database: configService.get<string>('DATABASE_NAME'),
         entities: ENTITIES,
         autoLoadEntities: true,
-        synchronize: false,
+        synchronize: true,
       })
     }),
     UsersModule,
-    AuthenticationModule
+    AuthenticationModule,
+    UserCodeValidationModule
   ],
   controllers: [],
   providers: [],

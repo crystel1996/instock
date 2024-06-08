@@ -3,8 +3,24 @@ import { Alert, Box, Button, Grid, TextField, Typography, styled } from "@mui/ma
 import { cyan } from "@mui/material/colors";
 import { EmailValidationInterface } from "./interface";
 import { ForgotPasswordValidation } from "../../../Helper";
+import { useLazyQuery } from "@apollo/client";
+import { FindUserByColumnQuery } from "../../../Services/Graphql/User";
 
 export const EmailValidation: FC<EmailValidationInterface> = (props) => {
+
+    const [findUserByEmail] = useLazyQuery(FindUserByColumnQuery, {
+        onCompleted: (result) => {
+            if(result.findUserByColumn?.id) {
+                props.setError(undefined);
+                props.onChangeStep(1);
+                return;
+            }
+            props.setError("Utilisateur introuvable!");
+        },
+        onError: (result) => {
+            props.setError(result.message);
+        }
+    });
     
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.type === 'checkbox') {
@@ -31,8 +47,14 @@ export const EmailValidation: FC<EmailValidationInterface> = (props) => {
         const checkEmailValidity = emailValidation.checkEmailValidity();
 
         if (checkEmailValidity.isValid) {
-            props.setError(undefined);
-            props.onChangeStep(1);
+            findUserByEmail({
+                variables: {
+                    input: {
+                        value: props.input.email,
+                        column: 'email'
+                    }
+                }
+            });
             return;
         }
 

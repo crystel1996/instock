@@ -19,11 +19,17 @@ type Register {
 
 type Query {
   me(input: UserMeInput!): User
+  findUserByColumn(input: FindUserByColumnInput!): User
   login(input: LoginInput!): Login!
 }
 
 input UserMeInput {
   accessToken: String!
+}
+
+input FindUserByColumnInput {
+  value: String!
+  column: String!
 }
 
 input LoginInput {

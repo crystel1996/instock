@@ -8,6 +8,7 @@ import { HashPassword } from "src/config";
 import { JwtService } from "@nestjs/jwt";
 import { RegisterInput } from "src/dto/Register/register.input";
 import { ConfigService } from "@nestjs/config";
+import { ResetPasswordInput } from "src/dto/Password/resetPassword.input";
 
 @Injectable()
 export class AuthenticationService {
@@ -76,6 +77,27 @@ export class AuthenticationService {
         }
 
         return user;
+    }
+
+    async resetPassword(input: ResetPasswordInput) {
+
+        const user = await this.userService.findUserByColumn(input.email, 'email');
+
+        if (!user) {
+            throw new Error('Utilisateur introuvable!');
+        }
+
+        if (input.password !== input.confirmPassword) {
+            throw new Error('Mot de passe non identique!');
+        }
+
+        const hashedPassword = await this.hashPassword.hashPassword(input.password);
+
+
+        user.password = hashedPassword;
+
+        return this.userRepository.save(user);
+
     }
 
 }

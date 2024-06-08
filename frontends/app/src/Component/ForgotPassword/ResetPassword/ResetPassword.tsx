@@ -3,8 +3,20 @@ import { Alert, Box, Button, Grid, TextField, Typography, styled } from "@mui/ma
 import { cyan } from "@mui/material/colors";
 import { ResetPasswordInterface } from "./interface";
 import { ForgotPasswordValidation } from "../../../Helper";
+import { useMutation } from "@apollo/client";
+import { ResetPasswordMutation } from "../../../Services/Graphql";
 
 export const ResetPassword: FC<ResetPasswordInterface> = (props) => {
+
+    const [resetPassword] = useMutation(ResetPasswordMutation, {
+        onCompleted: () => {
+            window.location.href = "/login";
+        },
+        onError: (result) => {
+            props.setError(result.message);
+        }
+    });
+
     
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.type === 'checkbox') {
@@ -31,7 +43,16 @@ export const ResetPassword: FC<ResetPasswordInterface> = (props) => {
         const checkResetPassword = emailValidation.checkResetPassword();
 
         if (checkResetPassword.isValid) {
-            window.location.href = "/login";
+
+            resetPassword({
+                variables: {
+                    input: {
+                        email: props.input.email,
+                        password: props.input.password,
+                        confirmPassword: props.input.confirmPassword
+                    }
+                }
+            });
             return;
         }
 

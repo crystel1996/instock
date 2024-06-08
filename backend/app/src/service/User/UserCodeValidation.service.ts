@@ -5,7 +5,8 @@ import { UserCodeValidation } from "src/model/User/UserCodeValidation.entity";
 import { Repository } from "typeorm";
 import { UserService } from "./User.service";
 import { Code } from "src/config";
-import dayjs from "dayjs";
+import * as dayjs from "dayjs";
+import * as utc from "dayjs/plugin/utc";
 import { VerifyUserCodeValidationInput } from "src/dto/User/verifyUserCodeValidation.input";
 
 @Injectable()
@@ -14,7 +15,9 @@ export class UserCodeValidationService {
         @InjectRepository(UserCodeValidation) private userCodeValidationRepository: Repository<UserCodeValidation>,
         private userService: UserService,
         private code: Code
-    ) {}
+    ) {
+        dayjs.extend(utc);
+    }
 
     async countGeneratedCodeByEmail(email: string, type: string) {
         return this.userCodeValidationRepository.count({
@@ -41,13 +44,13 @@ export class UserCodeValidationService {
 
         const generatedCode = this.code.generate(4);
 
-        const now = dayjs();
+        const now = dayjs.utc();
 
         const newUserCodeValidation = this.userCodeValidationRepository.create({
             code: generatedCode,
             idUser: user.id,
             email: user.email,
-            expiredAt: now.add(1, 'hours'),
+            expiredAt: now.add(1, 'hours').toDate(),
             type: input.type
         });
         return this.userCodeValidationRepository.save(newUserCodeValidation);
@@ -70,10 +73,10 @@ export class UserCodeValidationService {
         });
 
         if (!codeValidation) {
-            throw new Error("Utilisateur introuvable");
+            throw new Error("Code introuvable");
         }
 
-        const now = dayjs();
+        const now = dayjs.utc();
         
         if (dayjs(codeValidation.expiredAt).isBefore(now)) {
             throw new Error("Code expiré");

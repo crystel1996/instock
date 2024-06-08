@@ -35,8 +35,7 @@ type Query {
   me(input: UserMeInput!): User
   findUserByColumn(input: FindUserByColumnInput!): User
   login(input: LoginInput!): Login!
-  verifyUserCodeValidation: Boolean!
-  generateUserCodeValidation: UserCodeValidation!
+  verifyUserCodeValidation(input: VerifyUserCodeValidationInput!): Boolean!
 }
 
 input UserMeInput {
@@ -53,9 +52,16 @@ input LoginInput {
   password: String!
 }
 
+input VerifyUserCodeValidationInput {
+  email: String!
+  code: String!
+  type: String!
+}
+
 type Mutation {
   createUser(createUserData: CreateUserInput!): User!
   register(input: RegisterInput!): Register!
+  generateUserCodeValidation(input: GenerateUserCodeValidationInput!): UserCodeValidation!
 }
 
 input CreateUserInput {
@@ -70,4 +76,9 @@ input RegisterInput {
   email: String!
   password: String!
   confirmPassword: String!
+}
+
+input GenerateUserCodeValidationInput {
+  email: String!
+  type: String!
 }

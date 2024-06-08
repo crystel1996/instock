@@ -1,4 +1,4 @@
-import { Resolver, Query } from "@nestjs/graphql";
+import { Resolver, Query, Mutation, Args } from "@nestjs/graphql";
 import { GenerateUserCodeValidationInput } from "src/dto/User/userCodeValidation.input";
 import { VerifyUserCodeValidationInput } from "src/dto/User/verifyUserCodeValidation.input";
 import { UserCodeValidation } from "src/model/User/UserCodeValidation.entity";
@@ -12,13 +12,13 @@ export class UserCodeValidationResolver {
     ) {}
 
     @Query(() => Boolean)
-    async verifyUserCodeValidation(input: VerifyUserCodeValidationInput) {
+    async verifyUserCodeValidation(@Args('input') input: VerifyUserCodeValidationInput) {
         return this.userCodeValidationService.verifyUserCodeValidation(input);
     }
 
 
-    @Query(() => UserCodeValidation)
-    async generateUserCodeValidation(input: GenerateUserCodeValidationInput) {
+    @Mutation(() => UserCodeValidation)
+    async generateUserCodeValidation(@Args('input') input: GenerateUserCodeValidationInput) {
         return this.userCodeValidationService.generateUserCodeValidation(input);
     }
 

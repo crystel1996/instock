@@ -8,6 +8,7 @@ import { ENTITIES } from './entity';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthenticationModule } from './module/Authentication/authentication.module';
 import { UserCodeValidationModule } from './module/User/userCodeValidation.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 const configService = new ConfigService();
 
@@ -16,6 +17,7 @@ const configService = new ConfigService();
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    ScheduleModule.forRoot(),
     JwtModule.register({
       global: true,
       secret: configService.get('SECRET_JWT'),

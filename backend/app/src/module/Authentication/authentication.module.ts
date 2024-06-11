@@ -4,6 +4,7 @@ import { EmailConfig, HashPassword } from "src/config";
 import { User } from "src/model/User/User.entity";
 import { AuthenticationResolver } from "src/resolvers/Authentication/authentication.resolver";
 import { AuthenticationService } from "src/service/Authentication/authentication.service";
+import { EmailService } from "src/service/Email/Email.service";
 import { UserService } from "src/service/User/User.service";
 
 
@@ -14,7 +15,8 @@ import { UserService } from "src/service/User/User.service";
         HashPassword,
         EmailConfig,
         AuthenticationResolver,
-        AuthenticationService
+        AuthenticationService,
+        EmailService
     ],
 })
 export class AuthenticationModule {}

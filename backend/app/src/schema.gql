@@ -63,6 +63,7 @@ type Mutation {
   createUser(createUserData: CreateUserInput!): User!
   register(input: RegisterInput!): Register!
   resetPassword(input: ResetPasswordInput!): User!
+  sendEmailResetPassword(input: SendEmailResetPasswordInput!): Boolean
   generateUserCodeValidation(input: GenerateUserCodeValidationInput!): UserCodeValidation!
 }
 
@@ -84,6 +85,13 @@ input ResetPasswordInput {
   password: String!
   confirmPassword: String!
   email: String!
+}
+
+input SendEmailResetPasswordInput {
+  to: String!
+  subject: String!
+  template: String!
+  code: String!
 }
 
 input GenerateUserCodeValidationInput {

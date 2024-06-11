@@ -2,7 +2,7 @@ import { ChangeEvent, FC, FormEvent } from "react";
 import { Alert, Box, Button, Grid, TextField, Typography, styled } from "@mui/material";
 import { cyan } from "@mui/material/colors";
 import { EmailValidationInterface } from "./interface";
-import { Email, ForgotPasswordValidation } from "../../../Helper";
+import { ForgotPasswordValidation } from "../../../Helper";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { FindUserByColumnQuery } from "../../../Services/Graphql/User";
 import { GenerateUserCodeValidationMutation, SendEmailResetPasswordMutation } from "../../../Services/Graphql";

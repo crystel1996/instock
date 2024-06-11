@@ -5,22 +5,32 @@ import { EmailValidationInterface } from "./interface";
 import { Email, ForgotPasswordValidation } from "../../../Helper";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { FindUserByColumnQuery } from "../../../Services/Graphql/User";
-import { GenerateUserCodeValidationMutation } from "../../../Services/Graphql";
+import { GenerateUserCodeValidationMutation, SendEmailResetPasswordMutation } from "../../../Services/Graphql";
 
 export const EmailValidation: FC<EmailValidationInterface> = (props) => {
 
+    const [sendEmailResetPassword] = useMutation(SendEmailResetPasswordMutation, {
+        onCompleted: (result) => {
+            if (result.sendEmailResetPassword) {
+                props.onChangeStep(1);
+            }
+        },
+        onError: () => {
+            props.setError("Une erreur a été survenue.");
+        }
+    });
+
     const [generateUserCodeValidation] = useMutation(GenerateUserCodeValidationMutation, {
         onCompleted: async (result) => {
-            const emailService = new Email({
-                emailReceiver: props.input.email
-            });
-            await emailService.send({
-                code: result.generateUserCodeValidation.code
-            }).then((result) => {
-                if (result.success) {
-                    props.onChangeStep(1);
-                } else {
-                    props.setError("Une erreur a été survenue.");
+
+            sendEmailResetPassword({
+                variables: {
+                    input: {
+                        to: props.input.email,
+                        subject: "Reinitialisation du mot de passe",
+                        template: process.env.REACT_APP_TEMPLATE_RESET_PASSWORD,
+                        code: result.generateUserCodeValidation.code
+                    }
                 }
             });
         },

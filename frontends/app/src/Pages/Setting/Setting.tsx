@@ -1,10 +1,13 @@
 import { FC } from "react";
 import { SettingPageInterface } from "./interface";
-import { Drawer, Header } from "../../Component";
+import { DrawerComponent, DrawerMenuInterface, Header } from "../../Component";
 
 export const SettingPage: FC<SettingPageInterface> = () => {
+
+    const settingMenu: DrawerMenuInterface[] = [];
+
     return <>
         <Header />
-        <Drawer />
+        <DrawerComponent menus={settingMenu} />
     </>
 }

@@ -1,10 +1,11 @@
 import { FC } from "react";
 import { DrawerComponentInterface } from "./interface";
-import { Divider, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Toolbar, styled } from "@mui/material";
+import { Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, SxProps, Theme, Toolbar, styled } from "@mui/material";
 
-const DrawerSX = {
+const DrawerSX: SxProps<Theme> = {
     width: 240,
     flexShrink: 0,
+    display: { xs: 'none', md: 'flex' }, 
     '& .MuiDrawer-paper': {
         width: 240,
         boxSizing: 'border-box',
@@ -29,7 +30,7 @@ export const DrawerComponent: FC<DrawerComponentInterface> = (props) => {
 const StyledWrapper = styled(Drawer)`
 
     & .MuiPaper-root {
-        top: 65px;
+        top: 69px;
     }
 
 `;

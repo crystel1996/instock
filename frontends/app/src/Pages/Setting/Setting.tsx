@@ -3,6 +3,7 @@ import { SettingPageInterface } from "./interface";
 import { DrawerComponent, DrawerMenuInterface, Header } from "../../Component";
 import { useLazyQuery } from "@apollo/client";
 import { GetAllSettingMenuByUserQuery } from "../../Services/Graphql/Setting/Query";
+import { SettingProfile } from "./Profile";
 
 export const SettingPage: FC<SettingPageInterface> = () => {
 
@@ -38,8 +39,13 @@ export const SettingPage: FC<SettingPageInterface> = () => {
         return []; 
     }, [allSettingMenuByUser.data?.getAllSettingMenusByUser]);
 
+    const mainComponent = useMemo(() => {
+        return <SettingProfile />
+    }, [window.location.pathname])
+
     return <>
         <Header />
-        <DrawerComponent menus={settingMenu} />
+        <DrawerComponent menus={settingMenu} title="Parametres" />
+        {mainComponent}
     </>
 }

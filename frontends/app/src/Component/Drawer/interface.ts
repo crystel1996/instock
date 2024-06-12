@@ -1,5 +1,6 @@
 export interface DrawerComponentInterface {
-    menus: DrawerMenuInterface[]
+    menus: DrawerMenuInterface[];
+    title: string;
 }
 
 export interface DrawerMenuInterface {

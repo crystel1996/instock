@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { DrawerComponentInterface } from "./interface";
-import { Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, SxProps, Theme, styled } from "@mui/material";
+import { Divider, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, SxProps, Theme, Toolbar, Typography, styled } from "@mui/material";
 
 const DrawerSX: SxProps<Theme> = {
     width: 240,
@@ -14,6 +14,10 @@ const DrawerSX: SxProps<Theme> = {
 
 export const DrawerComponent: FC<DrawerComponentInterface> = (props) => {
     return <StyledWrapper sx={DrawerSX} variant="permanent" anchor="left" className="test">
+                <Toolbar className="drawer-toolbar__title">
+                    <Typography component="h1" align="center" fontWeight="bold">{props.title}</Typography>
+                </Toolbar>
+                <Divider />
                 <List>
                     {props.menus.map((menu) => (
                         <ListItem key={menu.label} disablePadding>
@@ -33,6 +37,11 @@ const StyledWrapper = styled(Drawer)`
 
     & .MuiPaper-root {
         top: 69px;
+    }
+
+    & .drawer-toolbar__title {
+        display: flex;
+        justify-content: center;
     }
 
 `;

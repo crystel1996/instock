@@ -5,5 +5,9 @@ export const SettingRoute: RouterInterface[] = [
     {
         path: '/setting',
         element: <SettingPage />
+    },
+    {
+        path: '/my-profile',
+        element: <SettingPage />
     }
 ];

@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { DrawerComponentInterface } from "./interface";
-import { Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, SxProps, Theme, Toolbar, styled } from "@mui/material";
+import { Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, SxProps, Theme, styled } from "@mui/material";
 
 const DrawerSX: SxProps<Theme> = {
     width: 240,
@@ -18,7 +18,9 @@ export const DrawerComponent: FC<DrawerComponentInterface> = (props) => {
                     {props.menus.map((menu) => (
                         <ListItem key={menu.label} disablePadding>
                             <ListItemButton component='a' href={menu.url}>
-                                <ListItemIcon>{menu.icon}</ListItemIcon>
+                                <ListItemIcon>
+                                    <div dangerouslySetInnerHTML={{ __html: menu.icon }} />
+                                </ListItemIcon>
                                 <ListItemText primary={menu.label} />
                             </ListItemButton>
                         </ListItem>

@@ -9,6 +9,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { AuthenticationModule } from './module/Authentication/authentication.module';
 import { UserCodeValidationModule } from './module/User/userCodeValidation.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { SettingMenuModule } from './module/Setting/SettingMenu.module';
 
 const configService = new ConfigService();
 
@@ -43,7 +44,8 @@ const configService = new ConfigService();
     }),
     UsersModule,
     AuthenticationModule,
-    UserCodeValidationModule
+    UserCodeValidationModule,
+    SettingMenuModule
   ],
   controllers: [],
   providers: [],

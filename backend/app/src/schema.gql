@@ -9,12 +9,13 @@ type User {
   password: String!
 }
 
-type Login {
-  accessToken: String!
-}
-
-type Register {
-  accessToken: String!
+type SettingMenu {
+  id: ID!
+  code: String!
+  label: String!
+  url: String!
+  icon: String!
+  type: String!
 }
 
 type UserCodeValidation {
@@ -32,11 +33,20 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type Login {
+  accessToken: String!
+}
+
+type Register {
+  accessToken: String!
+}
+
 type Query {
   me(input: UserMeInput!): User
   findUserByColumn(input: FindUserByColumnInput!): User
   login(input: LoginInput!): Login!
   verifyUserCodeValidation(input: VerifyUserCodeValidationInput!): Boolean!
+  getAllSettingMenusByUser(input: GetAllSettingMenuByUserInput!): [SettingMenu!]!
 }
 
 input UserMeInput {
@@ -59,12 +69,17 @@ input VerifyUserCodeValidationInput {
   type: String!
 }
 
+input GetAllSettingMenuByUserInput {
+  type: [String!]!
+}
+
 type Mutation {
   createUser(createUserData: CreateUserInput!): User!
   register(input: RegisterInput!): Register!
   resetPassword(input: ResetPasswordInput!): User!
   sendEmailResetPassword(input: SendEmailResetPasswordInput!): Boolean
   generateUserCodeValidation(input: GenerateUserCodeValidationInput!): UserCodeValidation!
+  createSettingMenu(input: CreateSettingMenuInput!): SettingMenu!
 }
 
 input CreateUserInput {
@@ -96,5 +111,13 @@ input SendEmailResetPasswordInput {
 
 input GenerateUserCodeValidationInput {
   email: String!
+  type: String!
+}
+
+input CreateSettingMenuInput {
+  code: String!
+  label: String!
+  url: String!
+  icon: String!
   type: String!
 }

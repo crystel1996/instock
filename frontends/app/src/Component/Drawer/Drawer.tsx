@@ -14,7 +14,7 @@ export const DrawerComponent: FC<DrawerComponentInterface> = (props) => {
         return {
             width: 240,
             flexShrink: 0,
-            display: { xs: props.open ? 'block' : 'none', md: 'flex' }, 
+            display: { xs: props.open ? 'block' : 'none', md: props.open ? 'block' : 'none', lg: 'flex' }, 
             '& .MuiDrawer-paper': {
                 width: 240,
                 boxSizing: 'border-box',

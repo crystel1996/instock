@@ -72,7 +72,9 @@ const StyledContentWrapper = styled(Box)`
 `;
 
 const StyledContentSetting = styled(Box)`
-
+    ${props => props.theme.breakpoints.up('lg')} {
+        display: none;
+    }
     display: flex;
     align-items: center;
     justify-content: center;

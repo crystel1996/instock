@@ -202,6 +202,9 @@ export const Header: FC<HeaderComponentInterface> = () => {
 const StyledWrapper = styled(AppBar)`
 
     background-color: ${cyan[700]};
+    ${props => props.theme.breakpoints.down('lg')} {
+        box-shadow: none;
+    }
     .header-link {
         text-decoration: none !important;
     }

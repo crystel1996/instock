@@ -60,7 +60,9 @@ export const SettingPage: FC<SettingPageInterface> = () => {
                 <Button onClick={handleShowSetting} className="page-setting-title-content"  endIcon={<ArrowForward />}>Paramètres</Button>
             </StyledContentSetting>
             <DrawerComponent open={showDrawer} setOpen={setShowDrawer} menus={settingMenu} title="Parametres" />
-            {mainComponent}
+            <StyledMainContent>
+                {mainComponent}
+            </StyledMainContent>
         </StyledContentWrapper>
     </>
 }
@@ -89,3 +91,13 @@ const StyledContentSetting = styled(Box)`
     }
 `;
 
+const StyledMainContent = styled(Box)`
+
+    margin-top: 112px;
+
+    ${props => props.theme.breakpoints.up('lg')} {
+        margin-top: 0px;
+        margin-left: 240px;
+    }
+
+`;

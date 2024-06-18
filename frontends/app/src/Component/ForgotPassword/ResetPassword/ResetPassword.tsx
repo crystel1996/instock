@@ -8,7 +8,7 @@ import { ResetPasswordMutation } from "../../../Services/Graphql";
 
 export const ResetPassword: FC<ResetPasswordInterface> = (props) => {
 
-    const [resetPassword] = useMutation(ResetPasswordMutation, {
+    const [resetPassword, resetingPassword] = useMutation(ResetPasswordMutation, {
         onCompleted: () => {
             window.location.href = "/login";
         },
@@ -100,7 +100,7 @@ export const ResetPassword: FC<ResetPasswordInterface> = (props) => {
                         />
                     </Box>
                     <Box py={1}>
-                        <Button className="reset-password-submit" type="submit" variant="contained">Vérifier</Button>
+                        <Button disabled={resetingPassword.loading} className="reset-password-submit" type="submit" variant="contained">Vérifier</Button>
                     </Box>
                     <Box py={1}>
                         <Button component="a" href="/login" className="reset-password-submit" color="secondary" variant="contained">Annuler</Button>

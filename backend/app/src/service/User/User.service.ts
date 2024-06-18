@@ -49,7 +49,6 @@ export class UserService {
     }
 
     async findUserByColumn(value: string, column: string) {
-        console.log('CHECK', value)
         const user = await this.userRepository.findOne({
             where: {
                 [column]: value

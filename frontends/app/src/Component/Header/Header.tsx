@@ -12,7 +12,8 @@ import {
     Button, 
     Tooltip, 
     Avatar, 
-    Link 
+    Link, 
+    Fade
 } from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
 import { cyan } from '@mui/material/colors';
@@ -98,9 +99,20 @@ export const Header: FC<HeaderComponentInterface> = () => {
                         }}
                         open={Boolean(anchorElNav)}
                         onClose={handleCloseNavMenu}
+                        marginThreshold={0}
                         sx={{
                             display: { xs: 'block', md: 'none' },
                         }}
+                        slotProps={{
+                            paper: {
+                                sx: {
+                                    width: '100vw',
+                                    maxWidth: '100vw',
+                                    top: '56px !important'
+                                }
+                            }
+                        }}
+                        className="header-page-menu"
                     >
                         {pages.map((page) => (
                             <MenuItem key={page.label} onClick={handleCloseNavMenu}>
@@ -148,7 +160,6 @@ export const Header: FC<HeaderComponentInterface> = () => {
                         </IconButton>
                     </Tooltip>
                     <StyledNavbarMenu
-                        sx={{ mt: '45px' }}
                         id="menu-appbar"
                         anchorEl={anchorElUser}
                         anchorOrigin={{
@@ -156,12 +167,25 @@ export const Header: FC<HeaderComponentInterface> = () => {
                             horizontal: 'right',
                         }}
                         keepMounted
+                        marginThreshold={0}
                         transformOrigin={{
                             vertical: 'top',
                             horizontal: 'right',
                         }}
+                        slotProps={{
+                            paper: {
+                                sx: {
+                                    width: '100vw',
+                                    maxWidth: '100vw',
+                                    top: '56px !important'
+                                }
+                            }
+                        }}
                         open={Boolean(anchorElUser)}
                         onClose={handleCloseUserMenu}
+                        TransitionComponent={Fade}
+                        className="header-setting-menu"
+
                     >
                         {settings.map((setting) => (
                             <MenuItem key={setting.label} onClick={handleCloseUserMenu}>
@@ -178,6 +202,9 @@ export const Header: FC<HeaderComponentInterface> = () => {
 const StyledWrapper = styled(AppBar)`
 
     background-color: ${cyan[700]};
+    ${props => props.theme.breakpoints.down('lg')} {
+        box-shadow: none;
+    }
     .header-link {
         text-decoration: none !important;
     }
@@ -185,7 +212,12 @@ const StyledWrapper = styled(AppBar)`
 `;
 
 const StyledNavbarMenu = styled(Menu)`
-
+    & .MuiPaper-root {
+        ${props => props.theme.breakpoints.up('lg')} {
+            top: 69px !important;
+            max-width: 250px;
+        }
+    }
     .header-link {
         text-decoration: none;
     }

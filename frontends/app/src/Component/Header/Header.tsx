@@ -209,6 +209,12 @@ const StyledWrapper = styled(AppBar)`
 `;
 
 const StyledNavbarMenu = styled(Menu)`
+    & .MuiPaper-root {
+        ${props => props.theme.breakpoints.up('lg')} {
+            top: 69px !important;
+            max-width: 250px;
+        }
+    }
     .header-link {
         text-decoration: none;
     }

@@ -6,3 +6,4 @@ export * from './Header';
 export * from './Me';
 export * from './Drawer';
 export * from './Profile';
+export * from './Loading';

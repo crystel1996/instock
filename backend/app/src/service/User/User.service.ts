@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { EmailConfig, HashPassword } from "src/config";
 import { CreateUserInput } from "src/dto/User/createUser.input";
+import { UpdateUserProfileInput } from "src/dto/User/updateUserProfile.input";
 import { User } from "src/model/User/User.entity";
 import { Repository } from "typeorm";
 
@@ -46,6 +47,40 @@ export class UserService {
 
         const newUser = this.userRepository.create(userInput);
         return this.userRepository.save(newUser);
+    }
+
+    async updateUserProfile(input: UpdateUserProfileInput) {
+        const user = await this.userRepository.findOne({
+            where: {
+                id: input.id
+            }
+        });
+
+        if (!user) {
+            throw new Error('Utilisateur introuvable!');
+        }
+
+        const isValidEmail = this.emailConfig.isValidEmail(input.email)
+
+        if (!isValidEmail) {
+            throw new Error("L'email n'est pas valide!");
+        }
+
+        const existUserWithEmail = await this.findUserByColumn(input.email, 'email');
+
+        if (existUserWithEmail && existUserWithEmail?.id !== input.id) {
+            throw new Error("L'adresse email est déja utilisé par un autre utilisateur.");
+        }
+
+        const userInput = {
+            email: input.email,
+            username: input.username
+        }
+
+        await this.userRepository.update(user.id, userInput);
+
+        return user;
+
     }
 
     async findUserByColumn(value: string, column: string) {

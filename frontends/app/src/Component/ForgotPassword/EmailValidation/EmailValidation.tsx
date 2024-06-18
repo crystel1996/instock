@@ -9,7 +9,7 @@ import { GenerateUserCodeValidationMutation, SendEmailResetPasswordMutation } fr
 
 export const EmailValidation: FC<EmailValidationInterface> = (props) => {
 
-    const [sendEmailResetPassword] = useMutation(SendEmailResetPasswordMutation, {
+    const [sendEmailResetPassword, sendingEmailResetPassword] = useMutation(SendEmailResetPasswordMutation, {
         onCompleted: (result) => {
             if (result.sendEmailResetPassword) {
                 props.onChangeStep(1);
@@ -20,7 +20,7 @@ export const EmailValidation: FC<EmailValidationInterface> = (props) => {
         }
     });
 
-    const [generateUserCodeValidation] = useMutation(GenerateUserCodeValidationMutation, {
+    const [generateUserCodeValidation, generatingUserCodeValidation] = useMutation(GenerateUserCodeValidationMutation, {
         onCompleted: async (result) => {
 
             sendEmailResetPassword({
@@ -126,7 +126,7 @@ export const EmailValidation: FC<EmailValidationInterface> = (props) => {
                         />
                     </Box>
                     <Box py={1}>
-                        <Button className="email-validation-submit" type="submit" variant="contained">Vérifier</Button>
+                        <Button disabled={sendingEmailResetPassword.loading || generatingUserCodeValidation.loading} className="email-validation-submit" type="submit" variant="contained">Vérifier</Button>
                     </Box>
                     <Box py={1}>
                         <Button component="a" href="/login" className="email-validation-submit" color="secondary" variant="contained">Annuler</Button>

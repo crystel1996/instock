@@ -21,7 +21,7 @@ export const CodeValidation: FC<CodeValidationInterface> = (props) => {
         }
     });
 
-    const [verifyCodeValidation] = useLazyQuery(VerifyUserCodeValidationQuery, {
+    const [verifyCodeValidation, verifyingCodeValidation] = useLazyQuery(VerifyUserCodeValidationQuery, {
         onCompleted: (result) => {
             console.log(result)
             if (result.verifyUserCodeValidation) {
@@ -148,7 +148,7 @@ export const CodeValidation: FC<CodeValidationInterface> = (props) => {
                         </Box>
                     )}
                     <Box py={1}>
-                        <Button className="code-validation-submit" type="submit" variant="contained">Vérifier</Button>
+                        <Button disabled={verifyingCodeValidation.loading} className="code-validation-submit" type="submit" variant="contained">Vérifier</Button>
                     </Box>
                     <Box py={1}>
                         <Button component="a" href="/login" className="code-validation-submit" color="secondary" variant="contained">Annuler</Button>

@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo } from "react";
+import { FC, useEffect, useMemo, MouseEvent, useState } from "react";
 import { SettingPageInterface } from "./interface";
 import { DrawerComponent, DrawerMenuInterface, Header } from "../../Component";
 import { useLazyQuery } from "@apollo/client";
@@ -11,6 +11,8 @@ import { cyan } from "@mui/material/colors";
 export const SettingPage: FC<SettingPageInterface> = () => {
 
     const [getAllSettingMenuByUser, allSettingMenuByUser] = useLazyQuery(GetAllSettingMenuByUserQuery);
+
+    const [showDrawer, setShowDrawer] = useState<boolean>(false);
 
     useEffect(() => {
         const fetchAllSettingByUser = () => {
@@ -26,6 +28,11 @@ export const SettingPage: FC<SettingPageInterface> = () => {
         fetchAllSettingByUser();
 
     }, []);
+
+    const handleShowSetting = (e: MouseEvent<HTMLElement>) => {
+        e.stopPropagation();
+        setShowDrawer((prev) => !prev);
+    };
 
     const settingMenu: DrawerMenuInterface[] = useMemo(() => {
 
@@ -50,9 +57,9 @@ export const SettingPage: FC<SettingPageInterface> = () => {
         <Header />
         <StyledContentWrapper>
             <StyledContentSetting bgcolor="red">
-                <Button className="page-setting-title-content"  endIcon={<ArrowForward />}>Paramètres</Button>
+                <Button onClick={handleShowSetting} className="page-setting-title-content"  endIcon={<ArrowForward />}>Paramètres</Button>
             </StyledContentSetting>
-            <DrawerComponent menus={settingMenu} title="Parametres" />
+            <DrawerComponent open={showDrawer} setOpen={setShowDrawer} menus={settingMenu} title="Parametres" />
             {mainComponent}
         </StyledContentWrapper>
     </>

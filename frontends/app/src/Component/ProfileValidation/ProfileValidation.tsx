@@ -42,10 +42,10 @@ export const ProfileValidation: FC<ProfileValidationInterface> = () => {
     return <StyledWrapper>
         <Typography variant="h3" className="profile-validation__title">Validation de votre compte</Typography>
         {error && <Alert severity="error">{error}</Alert>}
-        <Button onClick={handleToValidate} className="toValidation-profile" variant="contained">Valider votre profile</Button>
+        {!toValidated && (<Button onClick={handleToValidate} className="toValidation-profile" variant="contained">Valider votre profile</Button>)}
         {toValidated && (
             <form onSubmit={handleSubmit} className="profile-validation__form">
-                <Typography variant="subtitle1"textAlign="center">Remplir le formulaire avec le code envoye a votre email.</Typography>
+                <Typography variant="subtitle1"textAlign="center">Remplir le formulaire avec le code envoyé à votre email.</Typography>
                 <Box py={1}>
                     <TextField
                         required

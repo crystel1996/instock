@@ -81,6 +81,7 @@ type Mutation {
   register(input: RegisterInput!): Register!
   resetPassword(input: ResetPasswordInput!): User!
   sendEmailResetPassword(input: SendEmailResetPasswordInput!): Boolean
+  sendEmailProfileValidation(input: SendEmailProfileValidationInput!): Boolean
   generateUserCodeValidation(input: GenerateUserCodeValidationInput!): UserCodeValidation!
   createSettingMenu(input: CreateSettingMenuInput!): SettingMenu!
 }
@@ -121,6 +122,11 @@ input SendEmailResetPasswordInput {
   subject: String!
   template: String!
   code: String!
+}
+
+input SendEmailProfileValidationInput {
+  idUser: String!
+  subject: String!
 }
 
 input GenerateUserCodeValidationInput {

@@ -88,6 +88,22 @@ export class UserService {
 
     }
 
+    async findUserEmailReceiver(id: string) {
+        const user = await this.userRepository.findOne({
+            where: {
+                id: id
+            }
+        });
+
+        if (!user) {
+            throw new Error('Utilisateur introuvable!');
+        }
+
+        return {
+            to: user.email
+        }
+    }
+
     async updateAccountState(input: UpdateUserAccountStateInput) {
         const user = await this.userRepository.findOne({
             where: {

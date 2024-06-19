@@ -56,7 +56,12 @@ export const Profile: FC<ProfileInterface> = (props) => {
             return;
         }
 
-        props.onSubmit(input);
+        const inputValue: ProfileUserInput = {
+            ...input,
+            isRelogged: input.email !== props.user.email
+        };
+
+        props.onSubmit(inputValue);
     };
 
     const SUBTITLE = useMemo(() => {
@@ -70,6 +75,8 @@ export const Profile: FC<ProfileInterface> = (props) => {
                     <Typography onClick={handleToUpdate} className="profile__to-update" component="span">Modifier votre profile.</Typography>
                 </Typography>
     }, [toUpdate]);
+
+    console.log(props.user)
     
     return  <StyledWrapper 
                 container 
@@ -78,7 +85,7 @@ export const Profile: FC<ProfileInterface> = (props) => {
                 alignItems="center"
                 justifyContent="center"
             >
-                <Typography variant="h3" className="profile__title">{props.title}</Typography>
+                <Typography variant="h4" className="profile__title">{props.title}</Typography>
                 {SUBTITLE}
                 {error && <Alert severity="error">{error}</Alert>}
                 <form onSubmit={handleSubmit} className="profile__form">

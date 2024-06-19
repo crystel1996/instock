@@ -8,11 +8,20 @@ import { Box, styled } from "@mui/material";
 export const SettingProfile: FC<SettingPageInterface> = () => {
 
     const [error, setError] = useState<string | undefined>(undefined);
+    const [needToLogged, setNeedToLogged] = useState<boolean>(false);
 
     const [loadProfile, loadingProfile] = useLazyQuery(FindUserProfileQuery);
     const [updateUserProfile, updatingUserProfile] = useMutation(UpdateUserProfileMutation, {
-        onCompleted: () => {
+        onCompleted: (result) => {
+
+            console.log(result.updateUserProfile?.email, loadingProfile.data?.me?.email);
+
+            if (needToLogged) {
+                localStorage.removeItem('accessToken');
+            }
+
             window.location.reload();
+            
         },
         onError: (error) => {
             setError(error.message);
@@ -30,6 +39,9 @@ export const SettingProfile: FC<SettingPageInterface> = () => {
     };
 
     const handleSubmit = (input: ProfileUserInput) => {
+        if (input.isRelogged) {
+            setNeedToLogged(true);
+        }
         updateUserProfile({
             variables: {
                 input: {

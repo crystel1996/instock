@@ -79,7 +79,7 @@ export class UserService {
         const userInput = {
             email: input.email,
             username: input.username,
-            accountState: "NOT_VERIFIED"
+            accountState: user.email == input.email ? existUserWithEmail.accountState : 'NOT_VERIFIED'
         }
 
         await this.userRepository.update(user.id, userInput);

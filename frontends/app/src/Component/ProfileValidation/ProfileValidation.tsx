@@ -1,6 +1,6 @@
 import { ChangeEvent, FC, FormEvent, useState, MouseEvent, useEffect } from "react";
 import { ProfileValidationInputInterface, ProfileValidationInterface } from "./interface";
-import { Alert, Box, Button, TextField, Typography, styled } from "@mui/material";
+import { Alert, Box, Button, Grid, TextField, Typography, styled } from "@mui/material";
 import { ValidateUserProfileValidation } from "../../Helper";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { SendEmailProfileValidationMutation, VerifyUserCodeValidationQuery } from "../../Services/Graphql";
@@ -85,45 +85,57 @@ export const ProfileValidation: FC<ProfileValidationInterface> = (props) => {
         setError(checkValidation.message);
     };
 
-    return <StyledWrapper>
-        <Typography variant="h3" className="profile-validation__title">Validation de votre compte</Typography>
-        {error && <Alert severity="error">{error}</Alert>}
-        {!toValidated && (<Button onClick={handleToValidate} className="toValidation-profile" variant="contained">Valider votre profile</Button>)}
-        {toValidated && (
-            <form onSubmit={handleSubmit} className="profile-validation__form">
-                <Typography variant="subtitle1"textAlign="center">Remplir le formulaire avec le code envoyé à votre email.</Typography>
-                <Box py={1}>
-                    <TextField
-                        required
-                        id="code-validation"
-                        label="Code validation"
-                        type="text"
-                        variant="outlined"
-                        name="code"
-                        autoComplete="off"
-                        value={input.code}
-                        onChange={handleChange}
-                        className="profile-input"
-                    />
-                </Box>
-                <Button disabled={false} type="submit" variant="contained">Valider</Button>
-            </form>
-        )}
-    </StyledWrapper>
+    return  <StyledWrapper 
+                container 
+                className="profile-container" 
+                direction="column"
+                alignItems="center"
+                justifyContent="center"
+            >
+                <Typography variant="h4" className="profile-validation__title">Validation de votre compte</Typography>
+                {!toValidated && (<Button onClick={handleToValidate} className="toValidation-profile" variant="contained">Valider votre profile</Button>)}
+                {toValidated && (
+                    <form onSubmit={handleSubmit} className="profile-validation__form">
+                        {error && <Alert severity="error">{error}</Alert>}
+                        <Typography variant="subtitle1"textAlign="center">Remplir le formulaire avec le code envoyé à votre email.</Typography>
+                        <Box py={1}>
+                            <TextField
+                                required
+                                id="code-validation"
+                                label="Code validation"
+                                type="text"
+                                variant="outlined"
+                                name="code"
+                                autoComplete="off"
+                                value={input.code}
+                                onChange={handleChange}
+                                className="profile-input"
+                            />
+                        </Box>
+                        <Button disabled={false} type="submit" variant="contained">Valider</Button>
+                    </form>
+                )}
+            </StyledWrapper>
 
 }
 
-const StyledWrapper = styled(Box)`
+const StyledWrapper = styled(Grid)`
 
+    width: calc(100vw - 76px);
+    ${props => props.theme.breakpoints.up('lg')} {
+        width: 600px;
+    }
     .profile-validation__title {
         font-weight: bold;
+        text-align: center;
     }
 
     .profile-validation__form {
         display: flex;
         flex-direction: column;
+        width: calc(100vw - 76px);
         ${props => props.theme.breakpoints.up('lg')} {
-            width: 100%;
+            width: 600px;
         }
         .profile-input {
             width: 100%;

@@ -15,4 +15,5 @@ export interface ProfileUserInput {
     email: string;
     username: string;
     id: string;
+    isRelogged?: boolean
 }

@@ -6,6 +6,7 @@ export const FindUserProfileFragment = gql `
         id
         username
         email
+        accountState
     }
 
 `;

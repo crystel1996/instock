@@ -7,6 +7,7 @@ type User {
   username: String!
   email: String!
   password: String!
+  accountState: String!
 }
 
 type SettingMenu {
@@ -76,6 +77,7 @@ input GetAllSettingMenuByUserInput {
 type Mutation {
   createUser(createUserData: CreateUserInput!): User!
   updateUserProfile(input: UpdateUserProfileInput!): User!
+  updateUserAccountState(input: UpdateUserAccountStateInput!): User!
   register(input: RegisterInput!): Register!
   resetPassword(input: ResetPasswordInput!): User!
   sendEmailResetPassword(input: SendEmailResetPasswordInput!): Boolean
@@ -94,6 +96,11 @@ input UpdateUserProfileInput {
   id: String!
   username: String!
   email: String!
+}
+
+input UpdateUserAccountStateInput {
+  id: String!
+  accountState: String!
 }
 
 input RegisterInput {

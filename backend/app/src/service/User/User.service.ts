@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { EmailConfig, HashPassword } from "src/config";
 import { CreateUserInput } from "src/dto/User/createUser.input";
+import { UpdateUserAccountStateInput } from "src/dto/User/updateUserAccountState.input";
 import { UpdateUserProfileInput } from "src/dto/User/updateUserProfile.input";
 import { User } from "src/model/User/User.entity";
 import { Repository } from "typeorm";
@@ -45,7 +46,10 @@ export class UserService {
             password: hashedPassword
         }
 
-        const newUser = this.userRepository.create(userInput);
+        const newUser = this.userRepository.create({
+            ...userInput,
+            accountState: "NOT_VERIFIED"
+        });
         return this.userRepository.save(newUser);
     }
 
@@ -74,7 +78,29 @@ export class UserService {
 
         const userInput = {
             email: input.email,
-            username: input.username
+            username: input.username,
+            accountState: "NOT_VERIFIED"
+        }
+
+        await this.userRepository.update(user.id, userInput);
+
+        return user;
+
+    }
+
+    async updateAccountState(input: UpdateUserAccountStateInput) {
+        const user = await this.userRepository.findOne({
+            where: {
+                id: input.id
+            }
+        });
+
+        if (!user) {
+            throw new Error('Utilisateur introuvable!');
+        }
+
+        const userInput = {
+            accountState: input.accountState
         }
 
         await this.userRepository.update(user.id, userInput);

@@ -10,7 +10,7 @@ export const SettingProfile: FC<SettingPageInterface> = () => {
     const [error, setError] = useState<string | undefined>(undefined);
 
     const [loadProfile, loadingProfile] = useLazyQuery(FindUserProfileQuery);
-    const [updateUserProfile] = useMutation(UpdateUserProfileMutation, {
+    const [updateUserProfile, updatingUserProfile] = useMutation(UpdateUserProfileMutation, {
         onCompleted: () => {
             window.location.reload();
         },
@@ -52,8 +52,8 @@ export const SettingProfile: FC<SettingPageInterface> = () => {
         if (loadingProfile.error) {
             return <></>
         }
-        return <Profile onSubmit={handleSubmit} title="Votre profile" user={loadingProfile.data?.me} error={error}/> 
-    }, [loadingProfile.data?.me, loadingProfile.loading, loadingProfile.error, error]);
+        return <Profile onSubmit={handleSubmit} title="Votre profile" user={loadingProfile.data?.me} error={error} loading={updatingUserProfile.loading} /> 
+    }, [loadingProfile.data?.me, loadingProfile.loading, loadingProfile.error, error, updatingUserProfile.loading]);
     
     return <StyledWrapper>{PROFILE}</StyledWrapper>
 }

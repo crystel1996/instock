@@ -7,6 +7,7 @@ export interface ProfileInterface {
     }
     onSubmit: (input: ProfileUserInput) => void;
     error?: string;
+    loading?: boolean;
 }
 
 export interface ProfileUserInput {

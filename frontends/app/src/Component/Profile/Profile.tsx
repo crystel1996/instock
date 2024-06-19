@@ -3,6 +3,7 @@ import { ProfileInterface, ProfileUserInput } from "./interface";
 import { Grid, Typography, styled, Box, TextField, Button, Alert } from "@mui/material";
 import { cyan } from "@mui/material/colors";
 import { UpdateUserProfileValidation } from "../../Helper/FormValidation/UpdateUserProfileValidation";
+import { ProfileValidation } from "../ProfileValidation";
 
 const DEFAULT_INPUT: ProfileUserInput = {
     id: '',
@@ -109,8 +110,11 @@ export const Profile: FC<ProfileInterface> = (props) => {
                             className="profile-input"
                         />
                     </Box>
-                    {toUpdate && (<Button disabled={false} type="submit" variant="contained">Modifier</Button>)}
+                    {toUpdate && (<Button disabled={props.loading} type="submit" variant="contained">Modifier</Button>)}
                 </form>
+                <Box py={1}>
+                    <ProfileValidation />
+                </Box>
             </StyledWrapper>
 }
 

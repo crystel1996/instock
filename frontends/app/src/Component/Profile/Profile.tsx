@@ -112,9 +112,11 @@ export const Profile: FC<ProfileInterface> = (props) => {
                     </Box>
                     {toUpdate && (<Button disabled={props.loading} type="submit" variant="contained">Modifier</Button>)}
                 </form>
-                <Box py={1}>
-                    <ProfileValidation />
-                </Box>
+                {props.user?.accountState === 'NOT_VERIFIED' && (
+                    <Box py={1}>
+                        <ProfileValidation user={props.user} />
+                    </Box>
+                )}
             </StyledWrapper>
 }
 

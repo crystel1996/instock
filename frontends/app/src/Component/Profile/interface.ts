@@ -4,6 +4,7 @@ export interface ProfileInterface {
         email: string;
         username: string;
         id: string;
+        accountState: string;
     }
     onSubmit: (input: ProfileUserInput) => void;
     error?: string;

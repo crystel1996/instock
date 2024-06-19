@@ -1,22 +1,59 @@
-import { ChangeEvent, FC, FormEvent, useState, MouseEvent } from "react";
+import { ChangeEvent, FC, FormEvent, useState, MouseEvent, useEffect } from "react";
 import { ProfileValidationInputInterface, ProfileValidationInterface } from "./interface";
 import { Alert, Box, Button, TextField, Typography, styled } from "@mui/material";
 import { ValidateUserProfileValidation } from "../../Helper";
+import { useLazyQuery, useMutation } from "@apollo/client";
+import { SendEmailProfileValidationMutation, VerifyUserCodeValidationQuery } from "../../Services/Graphql";
 
 const DEFAULT_INPUT: ProfileValidationInputInterface = {
     code: '',
     idUser: ''
 }
 
-export const ProfileValidation: FC<ProfileValidationInterface> = () => {
+export const ProfileValidation: FC<ProfileValidationInterface> = (props) => {
 
     const [input, setInput] = useState<ProfileValidationInputInterface>(DEFAULT_INPUT);
     const [toValidated, setToValidated] = useState<boolean>(false);
     const [error, setError] = useState<string | undefined>();
 
+    const [sendEmailProfileValidation] = useMutation(SendEmailProfileValidationMutation, {
+        onCompleted: () => {
+
+        },
+        onError: (error) => {
+            setError(error.message);
+        }
+    });
+
+    const [verifyCodeValidation] = useLazyQuery(VerifyUserCodeValidationQuery, {
+        onCompleted: () => {
+            window.location.reload();
+        },
+        onError: (error) => {
+            setError(error.message);
+        }
+    });
+
+    useEffect(() => {
+        if(props.user) {
+            setInput({
+                idUser: props.user?.id,
+                code: ''
+            });
+        }
+    }, [props.user]);
+
     const handleToValidate = (e: MouseEvent<HTMLElement>) => {
         e.stopPropagation();
         setToValidated((prev) => !prev);
+        sendEmailProfileValidation({
+            variables: {
+                input: {
+                    idUser: props.user?.id,
+                    subject: "Validation de votre profile Instock"
+                }
+            }
+        });
     };
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -34,6 +71,15 @@ export const ProfileValidation: FC<ProfileValidationInterface> = () => {
         const validation = new ValidateUserProfileValidation(input);
         const checkValidation = validation.isValid();
         if (checkValidation.isValid) {
+            verifyCodeValidation({
+                variables: {
+                    input: {
+                        email: props.user?.email,
+                        type: "PROFILE_VALIDATION",
+                        code: input.code
+                    }
+                }
+            });
             return;
         }
         setError(checkValidation.message);

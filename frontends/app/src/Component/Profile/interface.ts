@@ -4,13 +4,16 @@ export interface ProfileInterface {
         email: string;
         username: string;
         id: string;
+        accountState: string;
     }
     onSubmit: (input: ProfileUserInput) => void;
     error?: string;
+    loading?: boolean;
 }
 
 export interface ProfileUserInput {
     email: string;
     username: string;
     id: string;
+    isRelogged?: boolean
 }

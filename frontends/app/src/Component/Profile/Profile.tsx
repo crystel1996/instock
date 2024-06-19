@@ -3,6 +3,7 @@ import { ProfileInterface, ProfileUserInput } from "./interface";
 import { Grid, Typography, styled, Box, TextField, Button, Alert } from "@mui/material";
 import { cyan } from "@mui/material/colors";
 import { UpdateUserProfileValidation } from "../../Helper/FormValidation/UpdateUserProfileValidation";
+import { ProfileValidation } from "../ProfileValidation";
 
 const DEFAULT_INPUT: ProfileUserInput = {
     id: '',
@@ -55,7 +56,12 @@ export const Profile: FC<ProfileInterface> = (props) => {
             return;
         }
 
-        props.onSubmit(input);
+        const inputValue: ProfileUserInput = {
+            ...input,
+            isRelogged: input.email !== props.user.email
+        };
+
+        props.onSubmit(inputValue);
     };
 
     const SUBTITLE = useMemo(() => {
@@ -69,6 +75,8 @@ export const Profile: FC<ProfileInterface> = (props) => {
                     <Typography onClick={handleToUpdate} className="profile__to-update" component="span">Modifier votre profile.</Typography>
                 </Typography>
     }, [toUpdate]);
+
+    console.log(props.user)
     
     return  <StyledWrapper 
                 container 
@@ -77,7 +85,7 @@ export const Profile: FC<ProfileInterface> = (props) => {
                 alignItems="center"
                 justifyContent="center"
             >
-                <Typography variant="h3" className="profile__title">{props.title}</Typography>
+                <Typography variant="h4" className="profile__title">{props.title}</Typography>
                 {SUBTITLE}
                 {error && <Alert severity="error">{error}</Alert>}
                 <form onSubmit={handleSubmit} className="profile__form">
@@ -109,8 +117,13 @@ export const Profile: FC<ProfileInterface> = (props) => {
                             className="profile-input"
                         />
                     </Box>
-                    {toUpdate && (<Button disabled={false} type="submit" variant="contained">Modifier</Button>)}
+                    {toUpdate && (<Button disabled={props.loading} type="submit" variant="contained">Modifier</Button>)}
                 </form>
+                {props.user?.accountState === 'NOT_VERIFIED' && (
+                    <Box py={1}>
+                        <ProfileValidation user={props.user} />
+                    </Box>
+                )}
             </StyledWrapper>
 }
 

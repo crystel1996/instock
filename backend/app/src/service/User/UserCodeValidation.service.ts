@@ -88,6 +88,11 @@ export class UserCodeValidationService {
 
         lastCodeValidation.status = 'EXPIRED';
 
+        await this.userService.updateAccountState({
+            id: user.id,
+            accountState: "VALIDATED"
+        });
+
         await this.userCodeValidationRepository.save(lastCodeValidation);
 
         return true;

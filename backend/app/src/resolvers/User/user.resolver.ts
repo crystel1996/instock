@@ -1,6 +1,7 @@
 import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
 import { CreateUserInput } from "src/dto/User/createUser.input";
 import { FindUserByColumnInput } from "src/dto/User/findUserByColumn.input";
+import { UpdateUserAccountStateInput } from "src/dto/User/updateUserAccountState.input";
 import { UpdateUserProfileInput } from "src/dto/User/updateUserProfile.input";
 import { UserMeInput } from "src/dto/User/userMe.input";
 import { User } from "src/model/User/User.entity";
@@ -32,6 +33,11 @@ export class UserResolver {
     @Mutation(() => User)
     updateUserProfile(@Args('input') input: UpdateUserProfileInput) {
         return this.userService.updateUserProfile(input);
+    }
+
+    @Mutation(() => User)
+    updateUserAccountState(@Args('input') input: UpdateUserAccountStateInput) {
+        return this.userService.updateAccountState(input);
     }
 
 }

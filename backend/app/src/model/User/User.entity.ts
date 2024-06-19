@@ -20,6 +20,10 @@ export class User {
     @Field()
     password!: string;
 
+    @Column({ name: "accountState" })
+    @Field()
+    accountState: string;
+
     @Column({ name: 'created_at' })
     @CreateDateColumn()
     createdAt!: Date;

@@ -4,6 +4,8 @@ export const MeFragment = gql`
 
     fragment MeFragment on User {
         username
+        id
+        accountState
     }
 
 `;

@@ -25,7 +25,7 @@ export class User {
     accountState: string;
 
     @Column({ name: "profilePicture", nullable: true })
-    @Field()
+    @Field({ nullable: true })
     profilePicture: string;
 
     @Column({ name: 'created_at' })

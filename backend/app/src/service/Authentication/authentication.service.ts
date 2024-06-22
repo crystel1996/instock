@@ -70,7 +70,7 @@ export class AuthenticationService {
             secret: configService.get('SECRET_JWT')
         });
 
-        const user = await this.userService.findUserByColumn(decoded.username, 'email');
+        const user = await this.userService.findUserByColumn(decoded.sub, 'id');
 
         if (!user) {
             return null;

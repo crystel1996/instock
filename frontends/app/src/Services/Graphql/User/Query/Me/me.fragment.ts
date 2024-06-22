@@ -6,6 +6,7 @@ export const MeFragment = gql`
         username
         id
         accountState
+        profilePicture
     }
 
 `;

@@ -8,3 +8,4 @@ export * from './Drawer';
 export * from './Profile';
 export * from './Loading';
 export * from './ProfileValidation';
+export * from './Avatar'

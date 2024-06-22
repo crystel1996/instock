@@ -18,6 +18,7 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 import { cyan } from '@mui/material/colors';
 import { HeaderComponentInterface } from "./interface";
+import { AvatarComponent } from "../Avatar";
 
 
 const LogoTypography = {
@@ -156,7 +157,7 @@ export const Header: FC<HeaderComponentInterface> = () => {
                 <Box sx={{ flexGrow: 0 }}>
                     <Tooltip title="Open settings">
                         <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                            <Avatar alt="Remy Sharp" src="https://i.pravatar.cc/50" />
+                            <AvatarComponent alt="Remy Sharp" src="https://i.pravatar.cc/50" />
                         </IconButton>
                     </Tooltip>
                     <StyledNavbarMenu

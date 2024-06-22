@@ -2,8 +2,10 @@ import { FC, useState, MouseEvent, useMemo, FormEvent, ChangeEvent, useEffect } 
 import { ProfileInterface, ProfileUserInput } from "./interface";
 import { Grid, Typography, styled, Box, TextField, Button, Alert } from "@mui/material";
 import { cyan } from "@mui/material/colors";
+import EditIcon from '@mui/icons-material/Edit';
 import { UpdateUserProfileValidation } from "../../Helper/FormValidation/UpdateUserProfileValidation";
 import { ProfileValidation } from "../ProfileValidation";
+import { AvatarComponent } from "../Avatar";
 
 const DEFAULT_INPUT: ProfileUserInput = {
     id: '',
@@ -16,10 +18,12 @@ export const Profile: FC<ProfileInterface> = (props) => {
     const [toUpdate, setToUpdate] = useState<boolean>(false);
     const [input, setInput] = useState<ProfileUserInput>(DEFAULT_INPUT);
     const [error, setError] = useState<string | undefined>(undefined);
+    const [inputFile, setInputFile] = useState<string | null | undefined>(null);
 
     useEffect(() => {
         if(props.user) {
             setInput(props.user);
+            setInputFile(props.user.profilePicture)
         }
     }, [props.user]);
 
@@ -44,6 +48,13 @@ export const Profile: FC<ProfileInterface> = (props) => {
         });
     };
 
+    const handleChangeProfilePicture = (e: ChangeEvent<HTMLInputElement>) => {
+        e.stopPropagation();
+        if(e.target.files) {
+            setInputFile(URL.createObjectURL(e.target.files[0]));
+        }
+    };
+
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
@@ -64,6 +75,10 @@ export const Profile: FC<ProfileInterface> = (props) => {
         props.onSubmit(inputValue);
     };
 
+    const handleSubmitProfilePicture = (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+    };
+
     const SUBTITLE = useMemo(() => {
         if (toUpdate) {
             return  <Typography variant="subtitle1">
@@ -76,7 +91,7 @@ export const Profile: FC<ProfileInterface> = (props) => {
                 </Typography>
     }, [toUpdate]);
 
-    console.log(props.user)
+    console.log('[FILES]',props.user?.profilePicture, inputFile);
     
     return  <StyledWrapper 
                 container 
@@ -86,8 +101,29 @@ export const Profile: FC<ProfileInterface> = (props) => {
                 justifyContent="center"
             >
                 <Typography variant="h4" className="profile__title">{props.title}</Typography>
-                {SUBTITLE}
                 {error && <Alert severity="error">{error}</Alert>}
+                <Box px={1}>
+                    <form onSubmit={handleSubmitProfilePicture} className="profile__form-picture">
+                        <Box py={1} display="flex" flexDirection="row" justifyContent="center" alignItems="center">
+                            <AvatarComponent height={80} width={80} alt={props.user?.username} src={inputFile ?? ''} />
+                            <Box px={1}>
+                                <Button  component="label" htmlFor="upload-picture" startIcon={<EditIcon />} variant="contained">
+                                    Modifier votre photo
+                                    <input
+                                        type="file"
+                                        id="upload-picture"
+                                        onChange={handleChangeProfilePicture}
+                                        hidden
+                                    />
+                                </Button>
+                            </Box>
+                        </Box>
+                        {props.user?.profilePicture !== inputFile && (
+                            <Button hidden={props.user?.profilePicture === inputFile} disabled={props.loading} type="submit" variant="contained">Modifier</Button>
+                        )}
+                    </form>
+                </Box>
+                {SUBTITLE}
                 <form onSubmit={handleSubmit} className="profile__form">
                     <Box py={1}>
                         <TextField
@@ -150,6 +186,11 @@ const StyledWrapper = styled(Grid)`
         .profile-input {
             width: 100%;
         }
+    }
+
+    .profile__form-picture {
+        display: flex;
+        flex-direction: column;
     }
 
 `;

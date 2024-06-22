@@ -24,6 +24,10 @@ export class User {
     @Field()
     accountState: string;
 
+    @Column({ name: "profilePicture", nullable: true })
+    @Field()
+    profilePicture: string;
+
     @Column({ name: 'created_at' })
     @CreateDateColumn()
     createdAt!: Date;

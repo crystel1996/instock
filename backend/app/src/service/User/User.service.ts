@@ -4,6 +4,7 @@ import { EmailConfig, HashPassword } from "src/config";
 import { CreateUserInput } from "src/dto/User/createUser.input";
 import { UpdateUserAccountStateInput } from "src/dto/User/updateUserAccountState.input";
 import { UpdateUserProfileInput } from "src/dto/User/updateUserProfile.input";
+import { UpdateUserProfilePictureInput } from "src/dto/User/updateUserProfilePicture.input";
 import { User } from "src/model/User/User.entity";
 import { Repository } from "typeorm";
 
@@ -14,6 +15,20 @@ export class UserService {
         private hashPassword: HashPassword,
         private emailConfig: EmailConfig
     ) {}
+
+    async isUserExist(id: string) {
+        const user = await this.userRepository.findOne({
+            where: {
+                id: id
+            }
+        });
+
+        if (!user) {
+            throw new Error('Utilisateur introuvable!');
+        }
+
+        return user;
+    }
 
     async createUser(createUserData: CreateUserInput) {
 
@@ -54,15 +69,7 @@ export class UserService {
     }
 
     async updateUserProfile(input: UpdateUserProfileInput) {
-        const user = await this.userRepository.findOne({
-            where: {
-                id: input.id
-            }
-        });
-
-        if (!user) {
-            throw new Error('Utilisateur introuvable!');
-        }
+        const user = await this.isUserExist(input.id);
 
         const isValidEmail = this.emailConfig.isValidEmail(input.email)
 
@@ -89,15 +96,7 @@ export class UserService {
     }
 
     async findUserEmailReceiver(id: string) {
-        const user = await this.userRepository.findOne({
-            where: {
-                id: id
-            }
-        });
-
-        if (!user) {
-            throw new Error('Utilisateur introuvable!');
-        }
+        const user = await this.isUserExist(id)
 
         return {
             to: user.email
@@ -105,11 +104,7 @@ export class UserService {
     }
 
     async updateAccountState(input: UpdateUserAccountStateInput) {
-        const user = await this.userRepository.findOne({
-            where: {
-                id: input.id
-            }
-        });
+        const user = await this.isUserExist(input.id);
 
         if (!user) {
             throw new Error('Utilisateur introuvable!');
@@ -120,6 +115,19 @@ export class UserService {
         }
 
         await this.userRepository.update(user.id, userInput);
+
+        return user;
+
+    }
+
+    async updateProfilePicture(input: UpdateUserProfilePictureInput) {
+        const user = await this.isUserExist(input.id);
+
+        const userUpdated: Partial<User> = {
+            profilePicture: input.path
+        };
+
+        await this.userRepository.update(user.id, userUpdated);
 
         return user;
 

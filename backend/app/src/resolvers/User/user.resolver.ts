@@ -3,6 +3,7 @@ import { CreateUserInput } from "src/dto/User/createUser.input";
 import { FindUserByColumnInput } from "src/dto/User/findUserByColumn.input";
 import { UpdateUserAccountStateInput } from "src/dto/User/updateUserAccountState.input";
 import { UpdateUserProfileInput } from "src/dto/User/updateUserProfile.input";
+import { UpdateUserProfilePictureInput } from "src/dto/User/updateUserProfilePicture.input";
 import { UserMeInput } from "src/dto/User/userMe.input";
 import { User } from "src/model/User/User.entity";
 import { AuthenticationService } from "src/service/Authentication/authentication.service";
@@ -38,6 +39,11 @@ export class UserResolver {
     @Mutation(() => User)
     updateUserAccountState(@Args('input') input: UpdateUserAccountStateInput) {
         return this.userService.updateAccountState(input);
+    }
+
+    @Mutation(() => String)
+    updateUserProfilePicture(@Args('input') input: UpdateUserProfilePictureInput) {
+        return this.userService.updateProfilePicture(input);
     }
 
 }
